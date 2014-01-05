@@ -73,7 +73,6 @@ class HostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def host_params
-      # params[:host]
       params.require(:host).permit(:name, :status)
     end
 end

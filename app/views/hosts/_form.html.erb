@@ -1,4 +1,4 @@
-<%= form_for(@host) do |f| %>
+<%= bootstrap_form_for(@host, style: :horizontal, left: "col-sm-2", right: "col-sm-4") do |f| %>
   <% if @host.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@host.errors.count, "error") %> prohibited this host from being saved:</h2>
@@ -11,9 +11,10 @@
     </div>
   <% end %>
 
-  <%= text_field(:host, :name) %>
+  <%= f.text_field(:name) %>
+  <%= f.select :status, ["Pending", "Deployed","Superseded","Rejected"] %>
   
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Create" %>
   </div>
 <% end %>

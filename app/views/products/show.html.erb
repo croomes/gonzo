@@ -1,0 +1,9 @@
+<h1><%= @product.name %></h1>
+
+<dl class="dl-horizontal">
+  <dt>Description</dt><dd><%= @product.description %></dd>
+  <dt>Semantic Versioning</dt><dd><%= @product.semver %></dd>  
+</dl>
+
+<%= link_to 'Edit', edit_product_path(@product) %> |
+<%= link_to 'Back', products_path %>

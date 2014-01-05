@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140103224958) do
+ActiveRecord::Schema.define(version: 20140105231620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,23 @@ ActiveRecord::Schema.define(version: 20140103224958) do
   add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
   add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
 
+  create_table "host_releases", id: false, force: true do |t|
+    t.integer  "host_id",      null: false
+    t.integer  "release_id",   null: false
+    t.string   "status"
+    t.string   "targetstatus"
+    t.text     "report"
+    t.string   "slug"
+    t.datetime "statusdate"
+    t.datetime "reportdate"
+    t.datetime "targetdate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "host_releases", ["host_id"], name: "index_host_releases_on_host_id", using: :btree
+  add_index "host_releases", ["release_id"], name: "index_host_releases_on_release_id", using: :btree
+
   create_table "hosts", force: true do |t|
     t.string   "name"
     t.string   "status"
@@ -43,9 +60,12 @@ ActiveRecord::Schema.define(version: 20140103224958) do
     t.string   "name"
     t.string   "description"
     t.boolean  "semver"
+    t.string   "slug"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "products", ["slug"], name: "index_products_on_slug", unique: true, using: :btree
 
   create_table "releases", force: true do |t|
     t.string   "version"

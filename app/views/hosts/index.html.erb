@@ -1,9 +1,10 @@
 <h1>Listing hosts</h1>
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
-      <th>Hostname</th>      
+      <th>Hostname</th>   
+      <th>Status</th>            
       <th></th>
       <th></th>
       <th></th>
@@ -14,6 +15,7 @@
     <% @hosts.each do |host| %>
       <tr>
         <td><%= host.name %>
+        <td><%= host.status %>          
         <td><%= link_to 'Show', host %></td>
         <td><%= link_to 'Edit', edit_host_path(host) %></td>
         <td><%= link_to 'Destroy', host, method: :delete, data: { confirm: 'Are you sure?' } %></td>

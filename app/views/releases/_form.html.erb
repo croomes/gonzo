@@ -1,0 +1,21 @@
+<%= bootstrap_form_for(@release, style: :horizontal, left: "col-sm-2", right: "col-sm-4") do |f| %>
+  <% if @release.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@release.errors.count, "error") %> prohibited this release from being saved:</h2>
+
+      <ul>
+      <% @release.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <%= f.text_field :version, placeholder: "Version" %>
+  <%= f.collection_select :product_id, Product.find(:all), :id, :name %>
+  <%= f.select :status, ["Pending", "Deployed","Superseded","Rejected"] %>
+
+  <div class="actions">
+    <%= f.submit "Create" %>
+  </div>
+<% end %>

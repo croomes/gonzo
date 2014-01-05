@@ -1,9 +1,15 @@
 Gonzo::Application.routes.draw do
 
   root 'hosts#index'  
-  resources :hosts, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ } 
+  resources :hosts, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ } do
+    resources :products do
+      resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
+    end
+  end
   resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
-  resources :products
+  resources :products do
+    resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
+  end
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

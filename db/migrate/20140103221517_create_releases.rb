@@ -2,7 +2,7 @@ class CreateReleases < ActiveRecord::Migration
   def change
     create_table :releases do |t|
       t.string :version
-      t.integer :product_id
+      t.belongs_to :product
       t.string :status
       t.string :slug
       t.timestamps

@@ -30,6 +30,14 @@ gem 'jbuilder', '~> 1.2'
 # Use human-friendly strings as if they were numeric ids for ActiveRecord models
 gem 'friendly_id', '~> 5.0.2'
 
+gem 'bootstrap-sass'
+gem 'bootstrap_form'
+group :development do
+  gem 'rails_layout'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

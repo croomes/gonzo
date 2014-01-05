@@ -1,6 +1,8 @@
-<p id="notice"><%= notice %></p>
+<h1><%= @host.name %></h1>
 
-<%= @host.name %>
+<dl class="dl-horizontal">
+  <dt>Status</dt><dd><%= @host.status %></dd>
+</dl>
 
 <%= link_to 'Edit', edit_host_path(@host) %> |
 <%= link_to 'Back', hosts_path %>
