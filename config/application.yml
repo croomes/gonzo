@@ -1,0 +1,46 @@
+# Add account credentials and API keys here.
+# See http://railsapps.github.com/rails-environment-variables.html
+# This file should be listed in .gitignore to keep your settings secret!
+# Each entry sets a local environment variable and overrides ENV variables in the Unix shell.
+# For example, setting:
+# GMAIL_USERNAME: Your_Gmail_Username
+# makes 'Your_Gmail_Username' available as ENV["GMAIL_USERNAME"]
+# Add application configuration variables here, as shown below.
+#
+
+# admin user to seed the database when it is created.
+# alternatively (more secure), leave this commented and use 
+# /usr/share/mcomaster/script/add_user.sh -u user -m user@example.com -p password
+admin_name: Simon Croome
+admin_email: simon@croome.org
+admin_password: spitfire
+
+# required
+roles: [admin, user, VIP]
+
+# redis database location
+redis_host: 192.168.3.10
+redis_port: 6379
+redis_db: 1
+
+# ActiveMQ
+activemq:
+  heartbeat_interval: 60
+  pool:
+    size: 1
+    1:
+      host: 192.168.4.10
+      port: 6163
+      user: mcollective
+      password: marionette
+      ssl: 0
+
+discovery_ttl: 320 # this should be the same (a little bit more?) as the registration interval for mcollective
+
+# the hash below is sent to the client as JSON.
+client:
+  refresh_interval: 30 # how long between refreshes of agents, nodes, collectives?
+
+# this gets merged in to the default mcollective options hash
+mcollective:
+  :discovery_method: redisdiscovery

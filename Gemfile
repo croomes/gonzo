@@ -30,6 +30,11 @@ gem 'jbuilder', '~> 1.2'
 # Use human-friendly strings as if they were numeric ids for ActiveRecord models
 gem 'friendly_id', '~> 5.0.2'
 
+gem 'redis'
+gem 'stomp', '~> 1.2.16'
+gem 'mcollective-client', '~> 2.3.3'
+gem 'couchrest'
+
 gem 'bootstrap-sass'
 gem 'bootstrap_form'
 group :development do
