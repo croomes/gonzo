@@ -35,6 +35,10 @@ gem 'stomp', '~> 1.2.16'
 gem 'mcollective-client', '~> 2.3.3'
 gem 'couchrest'
 
+gem 'resque', require: 'resque/server'
+gem 'therubyracer'
+# gem 'resque-web', require: 'resque_web'
+
 gem 'bootstrap-sass'
 gem 'bootstrap_form'
 group :development do

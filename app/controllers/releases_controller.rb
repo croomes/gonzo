@@ -1,5 +1,5 @@
 class ReleasesController < ApplicationController
-  before_action :set_release, only: [:show, :edit, :update, :destroy]
+  before_action :set_release, only: [:show, :edit, :update, :analyse, :destroy]
 
   # GET /releases
   # GET /releases.json
@@ -60,7 +60,13 @@ class ReleasesController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+  
+  # PUT /releases/1/analyse
+  def analyse
+    Resque.enqueue(Mcollective::Ping, @release.id)
+    redirect_to releases_path, :notice => "Job submitted."    
+  end
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_release
