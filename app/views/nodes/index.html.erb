@@ -1,0 +1,21 @@
+<div ng-controller="Node">
+  <h1>{{ title }}</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Hostname</th>
+        <th>Classes</th> 
+        <th>Operating System</th>        
+        <th>Last seen</th>  
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="node in nodes">
+        <td>{{node.key}}</td>
+        <td>{{node.classes.length}}</td>  
+        <td>{{node.facts.operatingsystem}}</td>        
+        <td>{{node.lastseen * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+      </tr>    
+    </tbody>
+  </table>
+</div>

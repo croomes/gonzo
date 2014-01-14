@@ -15,6 +15,8 @@ Gonzo::Application.routes.draw do
     resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
   end
   
+  get "nodes" => 'nodes#index'
+  
   mount Resque::Server.new, :at => "/resque"
   
   # The priority is based upon order of creation: first created -> highest priority.

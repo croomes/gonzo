@@ -12,6 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
+//= require angular
+//= require angular-route
+////= require turbolinks
 //= require bootstrap
+//= require pouchdb-1.1.0.min
 //= require_tree .
