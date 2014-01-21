@@ -8,7 +8,8 @@ Gonzo::Application.routes.draw do
   end
   resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ } do
     member do
-      put 'analyse'
+      get 'check'
+      get 'check_results'      
     end
   end
   resources :products do

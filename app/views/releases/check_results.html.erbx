@@ -1,0 +1,21 @@
+<div ng-controller="ReleaseResults">
+  <h1>{{ title }}</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Hostname</th>
+        <th>Revision</th> 
+        <th>Status</th>
+        <th>Message</th>                        
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="release in results">
+        <td>{{release._id}}</td>
+        <td>{{release._rev}}</td>  
+        <td>{{release.statusmsg}}</td>  
+        <td>{{release.data.message}}</td>                        
+      </tr>    
+    </tbody>
+  </table>
+</div>
