@@ -1,3 +1,4 @@
+
 # @gonzo.controller 'Nodes', ['$scope', 'nodes', ($scope, nodes) -> 
 #   $scope.nodes = [];
 #   $scope.title = "Nodes"

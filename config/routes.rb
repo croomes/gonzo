@@ -16,7 +16,8 @@ Gonzo::Application.routes.draw do
     resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
   end
   
-  get "nodes" => 'nodes#index'
+  # get "nodes" => 'nodes#index'
+  resources :nodes, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
   
   mount Resque::Server.new, :at => "/resque"
   

@@ -1,0 +1,12 @@
+<h1>{{nodeId}}</h1>
+<dl class="dl-horizontal">
+  
+  <dt>Key</dt><dd>{{node.key}}</dd>
+  <dt>Revision</dt><dd>{{node._rev}}</dd>
+  <dt>Last seen</dt><dd>{{node.lastseen * 1000 | date:'yyyy-MM-dd HH:mm:ss'}} ({{node.lastseen | timeago}})</dd>
+  <dt>Collectives</dt><div ng-repeat="collective in node.collectives track by $index"><dd>{{collective}}</dd></div>
+  <dt>Agent list</dt><div ng-repeat="agent in node.agentlist track by $index"><dd>{{agent}}</dd></div>
+  <dt>Classes</dt><div ng-repeat="class in node.classes track by $index"><dd>{{class}}</dd></div>
+  <dt>Facts</dt><div ng-repeat="(fact, value) in node.facts track by $index"><dd>{{fact}}: {{value}}</dd></div>
+</dl>
+
