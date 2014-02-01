@@ -22,10 +22,14 @@ gonzo.config([
       templateUrl: '../assets/nodes/view.html',
       controller: 'NodeCtrl'
     });
-    $routeProvider.otherwise({
+    $routeProvider.when('/nodes/', {
       templateUrl: '../assets/nodes/index.html',
       controller: 'NodeCtrl'
     });
+    // $routeProvider.otherwise({
+    //   templateUrl: '../assets/nodes/index.html',
+    //   controller: 'NodeCtrl'
+    // });
   }
 ]);
 
@@ -119,7 +123,7 @@ gonzo.factory('nodeWrapper', ['$q', '$rootScope', 'nodes', function($q, $rootSco
         });
       });
       return deferred.promise;
-    },    
+    },
     add: function(text) {
       var deferred = $q.defer();
       var doc = {
@@ -255,7 +259,7 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
       console.log(reason);
     });
   };
-  
+
   $scope.list = function() {
     nodeWrapper.list().then(function(res) {
       res.rows.forEach(function(element) {
@@ -266,7 +270,7 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
     }, function(reason) {
       console.log(reason);
     });
-  };  
+  };
 
   $scope.submit = function() {
     nodeWrapper.add($scope.text).then(function(res) {
@@ -287,7 +291,7 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
   $scope.view = function(id) {
     return $location.path('/nodes/'+id);
   };
-  
+
   // Load initial data
   if ($routeParams.nodeId) {
     $scope.nodes = [];
