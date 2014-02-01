@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require jquery
-//// require jquery_ujs
+// require jquery_ujs
 //= require pouchdb-1.1.0.min
 //= require angular
 //= require angular-route
@@ -19,3 +19,4 @@
 // require turbolinks
 //= require bootstrap
 //= require_tree .
+
