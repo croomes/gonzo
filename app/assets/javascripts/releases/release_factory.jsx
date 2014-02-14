@@ -33,6 +33,36 @@ gonzo.factory('listener', ['$rootScope', 'myPouch', function($rootScope, myPouch
 gonzo.factory('pouchWrapper', ['$q', '$rootScope', 'myPouch', function($q, $rootScope, myPouch) {
 
   return {
+    query: function(text) {
+      var deferred = $q.defer();
+      var doc = {
+        type: 'result',
+        text: text
+      };
+      myPouch.query({map:
+        function(doc) {
+          if ("changes" == doc.collection) {
+            emit([doc._id, 0], doc.output);
+          }
+          if ("report") {
+            if (doc.changes) {
+              for (var i in doc.changes) {
+                emit([doc.changes[i], doc.senderid], doc._id);
+              }
+            }
+          }
+        }        
+      }, {reduce: false}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(res);
+          }
+        });
+      });
+      return deferred.promise;      
+    },
     add: function(text) {
       var deferred = $q.defer();
       var doc = {

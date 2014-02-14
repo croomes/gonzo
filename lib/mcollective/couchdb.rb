@@ -20,7 +20,7 @@ module MCollective
       # end
 
       def connect(host, port, dbname, options={})
-        CouchRest.database!("http://#{host}:#{port}/#{dbname}")
+        CouchRest.database!("http://admin:admin@#{host}:#{port}/#{dbname}")
       end
 
       def get_last_rev(id)

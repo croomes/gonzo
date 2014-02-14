@@ -5,7 +5,7 @@ gonzo.config([
     $locationProvider.html5Mode(true);
     $routeProvider.when('/releases/:version/check_results', {
       templateUrl: '/assets/releases/results.html',      
-      controller: 'ResultCtrl'
+      controller: 'ChangeCtrl'
     });
     $routeProvider.when('/nodes/:nodeId', {
       templateUrl: '/assets/nodes/view.html',
