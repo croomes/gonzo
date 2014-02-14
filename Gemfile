@@ -35,7 +35,7 @@ gem 'friendly_id', '~> 5.0.2'
 gem 'redis'
 gem 'stomp', '~> 1.2.16'
 gem 'mcollective-client', '~> 2.3.3'
-gem 'couchrest'
+gem 'couchrest_model'
 gem 'resque', require: 'resque/server'
 
 gem 'bootstrap-sass'

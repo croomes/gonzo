@@ -15,8 +15,12 @@
 //= require pouchdb-1.1.0.min
 //= require angular
 //= require angular-route
+//= require angular-resource
 //= require moment.min.js
 // require turbolinks
 //= require bootstrap
+//= require_tree ./filters
+//= require gonzo
+// require_self
 //= require_tree .
 

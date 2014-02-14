@@ -45,10 +45,15 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
-    couchrest (1.2.0)
+    couchrest (1.1.3)
       mime-types (~> 1.15)
       multi_json (~> 1.0)
       rest-client (~> 1.6.1)
+    couchrest_model (2.0.1)
+      activemodel (>= 3.0)
+      couchrest (~> 1.1.3)
+      mime-types (>= 1.15)
+      tzinfo (>= 0.3.22)
     debug_inspector (0.0.2)
     erubis (2.7.0)
     execjs (2.0.2)
@@ -164,7 +169,7 @@ DEPENDENCIES
   bootstrap-sass
   bootstrap_form
   coffee-rails (~> 4.0.0)
-  couchrest
+  couchrest_model
   friendly_id (~> 5.0.2)
   jbuilder (~> 1.2)
   jquery-rails

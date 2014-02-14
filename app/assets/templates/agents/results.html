@@ -1,0 +1,15 @@
+<h1>{{ title }}</h1>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Hostname</th>        
+      <th>TTL</th> 
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="result in results">
+      <td><a ng-click="view(result.key)">{{result.key}}</a></td>
+      <td>{{result.ttl}}</td>  
+    </tr>    
+  </tbody>
+</table>

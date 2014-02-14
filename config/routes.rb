@@ -18,6 +18,11 @@ Gonzo::Application.routes.draw do
   
   # get "nodes" => 'nodes#index'
   resources :nodes, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
+  resources :agents, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }  
+  
+  scope :api do
+    resources :agents, only: [:index], defaults: {format: :json}
+  end
   
   mount Resque::Server.new, :at => "/resque"
   

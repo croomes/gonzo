@@ -1,0 +1,12 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Agent</th>        
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="agent in agents">
+      <td><a ng-click="view(agent.name)">{{agent.name}}</a></td>
+    </tr>    
+  </tbody>
+</table>
