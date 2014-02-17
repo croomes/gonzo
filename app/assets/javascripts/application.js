@@ -16,9 +16,12 @@
 //= require angular
 //= require angular-route
 //= require angular-resource
+//= require lodash
+//= require restangular
 //= require moment.min.js
 // require turbolinks
 //= require bootstrap
+//= require ui-bootstrap-tpls-0.11.0-SNAPSHOT.min
 //= require_tree ./filters
 //= require gonzo
 // require_self

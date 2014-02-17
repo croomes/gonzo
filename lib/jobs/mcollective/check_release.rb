@@ -19,54 +19,73 @@ module Mcollective
       dbname = "v" + release.version.gsub!(".", "_")
       @db = connect("localhost", "5984", dbname)
 
-      @db.save_doc({
-        "_id" => "_design/changelist",
-        :views => {
-         :all => {
-           :map => changelist_map,
-           :reduce => changelist_reduce,
-         },
-        }
-      })
-      Resque.logger.info("CouchDB changelist view created")
+      begin
+        @db.save_doc({
+          "_id" => "_design/changelist",
+          :views => {
+           :all => {
+             :map => changelist_map,
+             :reduce => changelist_reduce,
+           },
+          }
+        })
+        Resque.logger.info("CouchDB changelist view created")
+      rescue
+        Resque.logger.info("CouchDB changelist already created")
+      end
 
       mc = rpcclient("puppetenforce", {:color => "false"})
       mc.check(:environment => "uat") do |resp|
         begin
           resp[:collection] = "report"
           resp[:changes] = []
-          block = ""
           resp[:body][:data][:output].each_line do |line|
 
+            # New change block starting with xxxx:
             if line.match(/^[A-Z][a-z]*:/)
-              # New block starting with xxxx:
-              hash = Digest::MD5.hexdigest(line)
-              resp[:hash] = hash
 
               # Previous block needs to be saved
-              if ! block.empty?
+              unless @changeref.nil?
+
+                # If we've saved this change before, replace the current block with
+                # it as it contains node data
                 begin
-                  cached_block = MCollective::Cache.read(:release_results, hash)
-                  Resque.logger.debug("#{resp[:senderid]}: Found in cache: #{hash}")
+                  change = MCollective::Cache.read(:release_results, @changeref)
+                  Resque.logger.debug("#{resp[:senderid]}: Found in cache: #{@changeref}")
+                  change[:nodes] << resp[:senderid]
                 rescue
-                  cached_block = MCollective::Cache.write(:release_results, hash, block)
-                  save(hash, Hash[:collection => 'change', :output => cached_block])
-                  Resque.logger.debug("#{resp[:senderid]}: Saved in CouchDB and cached: #{hash}")
+                  change = Hash[:collection => 'change', :output => @block, :nodes => [resp[:senderid]]]
+                  Resque.logger.debug("#{resp[:senderid]}: NOT Found in cache: #{@changeref}")
                 end
-                resp[:changes] << hash # block
-                block = ""
+
+                # Add our node to the change, then write to couch and cache
+                begin
+                  MCollective::Cache.write(:release_results, @changeref, change)
+                  save(@changeref, change)
+                rescue
+                  Resque.logger.info("#{resp[:senderid]}: Error writing: #{@changeref}")
+                end
+                resp[:changes] << @changeref
+                @changeref = nil
+                @block = nil
+              end
+
+              case line
+                when /^Info:/,
+                     /^Notice: Finished catalog run/
+                  @skip = true
+                else
+                  @skip = false
+                  @changeref = Digest::MD5.hexdigest(line.strip)
+                  Resque.logger.debug("#{@changeref}: #{line.strip}")
               end
             end
-            unless line.match(/^Info:/)
-              # Add line to block, skipping single-line Info
-              # TODO: breaks on multi-line Info
-              block << line
+            unless @skip
+              (@block ||= "") << line
             end
           end
 
-          # Debug
-          # puts resp[:changes]
-
+          # Save the report
           save(resp[:senderid], resp)
 
         rescue RPCError => e

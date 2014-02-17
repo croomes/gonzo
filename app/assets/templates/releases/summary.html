@@ -1,0 +1,66 @@
+<div ng-controller="ChangeCtrl">
+  <h1>{{ title }}</h1>
+  
+  <tabset>
+    <tab heading="Summary">
+      <h3>Impact Analysis - {{version}}</h3>
+      <div class="row">
+        <div class="col-md-8">
+          <progressbar max="max" value="dynamic" dynamic-max="true"><span style="color:black; white-space:nowrap;">{{dynamic}} / {{max}}</span></progressbar>
+        </div>
+        <div class="col-md-4">
+          <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
+          <button ng-click="clear" type="button" class="btn btn-xs btn-danger">Clear</button>
+        </div>
+      </div>
+    </tab>
+    <tab heading="Changes">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Changeset</th>
+            <th>Change</th>
+            <th>Nodes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="change in changes">
+            <td>{{change._id}}</td>
+            <td><pre>{{change.output}}</pre></td>
+            <td>          
+              <span ng-repeat="node in change.nodes">
+                {{node}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>      
+    </tab>
+    <tab heading="Reports">
+      <table class="table table-striped">   
+        <thead>
+          <tr>
+            <th>Node</th>
+            <th>Report revision</th>
+            <th>Timestamp</th> 
+            <th>Status</th>    
+            <th>Changesets</th>
+          </tr>
+        </thead>        
+        <tbody>
+          <tr ng-repeat="result in results">
+            <td>{{result._id}}</td>
+            <td>{{result._rev }}</td>
+            <td>{{result.msgtime && result.msgtime * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+            <td>{{result.body.statusmsg && result.body.statusmsg || 'CHANGE' }}</td>
+            <td>          
+              <span ng-repeat="change in result.changes">
+                  <pre>{{change}}</pre>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>     
+    </tab>
+  </tabset>
+</div>

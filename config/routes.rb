@@ -1,6 +1,6 @@
 Gonzo::Application.routes.draw do
 
-  root 'hosts#index'  
+  root 'hosts#index'
   resources :hosts, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ } do
     resources :products do
       resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
@@ -9,23 +9,23 @@ Gonzo::Application.routes.draw do
   resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ } do
     member do
       get 'check'
-      get 'check_results'      
+      get 'summary'
     end
   end
   resources :products do
     resources :releases, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
   end
-  
+
   # get "nodes" => 'nodes#index'
   resources :nodes, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
-  resources :agents, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }  
-  
+  resources :agents, :constraints => { :id => /[^\/]+(?=\.html\z|\.json\z)|[^\/]+/ }
+
   scope :api do
     resources :agents, only: [:index], defaults: {format: :json}
   end
-  
+
   mount Resque::Server.new, :at => "/resque"
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

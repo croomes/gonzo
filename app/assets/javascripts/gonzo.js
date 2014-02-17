@@ -1,10 +1,18 @@
-var gonzo = angular.module('gonzo', ['ngRoute', 'ngResource', 'gonzoFilters']);
+var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'gonzoFilters']);
 
 gonzo.config([
   '$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
-    $routeProvider.when('/releases/:version/check_results', {
-      templateUrl: '/assets/releases/results.html',      
+    $routeProvider.when('/releases/:version/summary', {
+      templateUrl: '/assets/releases/summary.html',      
+      controller: 'ChangeCtrl'
+    });
+    $routeProvider.when('/releases/:version/changes', {
+      templateUrl: '/assets/releases/changes.html',      
+      controller: 'ChangeCtrl'
+    });
+    $routeProvider.when('/releases/:version/reports', {
+      templateUrl: '/assets/releases/reports.html',      
       controller: 'ChangeCtrl'
     });
     $routeProvider.when('/nodes/:nodeId', {
@@ -26,8 +34,9 @@ gonzo.config([
   }
 ]);
 
-gonzo.config([
-  "$httpProvider", function(provider) {
-    return provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
-  }
-]);
+// This breaks CouchDB, but without it can't query Rails...
+// gonzo.config([
+//   "$httpProvider", function(provider) {
+//     return provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+//   },
+// ]);

@@ -64,13 +64,13 @@ class ReleasesController < ApplicationController
   # PUT /releases/1/check
   def check
     Resque.enqueue(Mcollective::CheckRelease, @release.id)
-    redirect_to check_results_release_path, :notice => "Job submitted."    
+    redirect_to summary_release_path, :notice => "Job submitted."    
   end
 
-  # PUT /releases/1/check_results
-  def check_results  
+  # GET /releases/1/summary
+  def summary  
   end
-    
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_release

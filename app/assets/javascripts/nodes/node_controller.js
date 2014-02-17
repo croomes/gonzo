@@ -31,7 +31,6 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
 
   $scope.remove = function(id) {
     nodeWrapper.remove(id).then(function(res) {
-//      console.log(res);
     }, function(reason) {
       console.log(reason);
     });
@@ -58,7 +57,10 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
 
   // Listen for changes
   $scope.$on('newNode', function(event, node) {
-    $scope.nodes.push(node);
+    // Skip design docs
+    if (node.identity) {
+      $scope.nodes.push(node);  
+    }
   });
 
   $scope.$on('delNode', function(event, id) {
