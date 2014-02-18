@@ -104,7 +104,34 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
         });
       });
       return deferred.promise;
-    }
+    },
+    alldocs: function() {
+      var deferred = $q.defer();
+      changes.allDocs({include_docs: true}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(res);
+          }
+        });
+      });
+      return deferred.promise;
+    },
+    bulkdocs: function(docs) {
+      var deferred = $q.defer();
+      console.log(docs);
+      changes.bulkDocs({docs: docs}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(res);
+          }
+        });
+      });
+      return deferred.promise;
+    },
   };
 
 }]);

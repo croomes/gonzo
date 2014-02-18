@@ -72,7 +72,8 @@ module Mcollective
 
               case line
                 when /^Info:/,
-                     /^Notice: Finished catalog run/
+                     /^Notice: Finished catalog run/,
+                     /^Notice: .*\/File\[.*\]\/content: current_value \{md5\}[a-z0-9]*, should be \{md5\}[a-z0-9]*  \(noop\)$/
                   @skip = true
                 else
                   @skip = false

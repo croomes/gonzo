@@ -2,17 +2,34 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
                  function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
 
   $scope.analyse = function() {
-    Restangular.oneUrl('nodes', '/release/1.0.0/check').get().then(function(res) {
+    Restangular.oneUrl('nodes', '/releases/1.0.0/check.json').get().then(function(res) {
       console.log("analyse");      
       console.log(res);
     }, function(reason) {
       console.log(reason);
     });
   };
-  
-  $scope.clear = function() {
-   changeWrapper.add($scope.text).then(function(res) {
-     $scope.text = '';
+
+  // Uses bulk get/save to remove nodes from "change" documents.
+  // Keeps the changes in place so we don't lose metadata, just
+  // the association to nodes, and removing the node reports.
+  $scope.reset = function() {
+   changeWrapper.alldocs().then(function(docs) {
+     reset_changes = [];
+     docs.rows.forEach(function(entry) {
+       if (entry.doc.collection == "change") {
+         entry.doc.nodes = [];
+       }
+       else {
+         entry.doc._deleted = true;
+       }
+       reset_changes.push(entry.doc);
+     });
+     changeWrapper.bulkdocs(reset_changes).then(function(res) {
+       console.log("Cleared node associations from changes");
+     }, function(reason) {
+       console.log(reason);
+     });
    }, function(reason) {
      console.log(reason);
    });

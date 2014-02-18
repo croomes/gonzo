@@ -10,7 +10,7 @@
         </div>
         <div class="col-md-4">
           <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
-          <button ng-click="clear" type="button" class="btn btn-xs btn-danger">Clear</button>
+          <button ng-click="reset()" type="button" class="btn btn-xs btn-danger">Clear</button>
         </div>
       </div>
     </tab>
@@ -21,16 +21,22 @@
             <th>Changeset</th>
             <th>Change</th>
             <th>Nodes</th>
+            <th>Risk</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="change in changes">
+          <tr ng-repeat="change in changes | skip">
             <td>{{change._id}}</td>
             <td><pre>{{change.output}}</pre></td>
             <td>          
               <span ng-repeat="node in change.nodes">
                 {{node}}
               </span>
+            </td>
+            <td>
+              <button ng-click="set_low()" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
+              <button ng-click="set_medium()" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
+              <button ng-click="set_high()" type="button" class="btn btn-xs btn-block btn-danger">High</button>
             </td>
           </tr>
         </tbody>

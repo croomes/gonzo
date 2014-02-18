@@ -3,6 +3,10 @@ var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', '
 gonzo.config([
   '$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
+    $routeProvider.when('/releases/', {
+      templateUrl: '/assets/releases/index.html',      
+      controller: 'ReleaseCtrl'
+    });
     $routeProvider.when('/releases/:version/summary', {
       templateUrl: '/assets/releases/summary.html',      
       controller: 'ChangeCtrl'
@@ -40,3 +44,19 @@ gonzo.config([
 //     return provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 //   },
 // ]);
+
+angular.module('gonzoFilters', []).filter('skip', function() {
+  return function(input, empty) {
+    // Do nothing is we need to include empty nodes
+    if (empty) {
+      return input;
+    }
+    output = [];
+    input.forEach(function(entry) {
+      if (entry.nodes && entry.nodes.length > 0) {
+        output.push(entry);
+      }
+    })
+    return output;
+  };
+});

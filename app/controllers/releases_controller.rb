@@ -64,7 +64,10 @@ class ReleasesController < ApplicationController
   # PUT /releases/1/check
   def check
     Resque.enqueue(Mcollective::CheckRelease, @release.id)
-    redirect_to summary_release_path, :notice => "Job submitted."    
+    respond_to do |format|
+      format.html { redirect_to summary_release_path, :notice => "Job submitted." }
+      format.json { head :no_content }
+    end
   end
 
   # GET /releases/1/summary
