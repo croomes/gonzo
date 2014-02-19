@@ -18,20 +18,11 @@ module Mcollective
       release = Release.find(release_id)
       dbname = "v" + release.version.gsub!(".", "_")
       @db = connect("localhost", "5984", dbname)
+      @views = ["changelist", "risk"]
 
-      begin
-        @db.save_doc({
-          "_id" => "_design/changelist",
-          :views => {
-           :all => {
-             :map => changelist_map,
-             :reduce => changelist_reduce,
-           },
-          }
-        })
-        Resque.logger.info("CouchDB changelist view created")
-      rescue
-        Resque.logger.info("CouchDB changelist already created")
+      # Create helper views
+      @views.each do |view|
+        create_view(view)
       end
 
       mc = rpcclient("puppetenforce", {:color => "false"})
@@ -73,7 +64,7 @@ module Mcollective
               case line
                 when /^Info:/,
                      /^Notice: Finished catalog run/,
-                     /^Notice: .*\/File\[.*\]\/content: current_value \{md5\}[a-z0-9]*, should be \{md5\}[a-z0-9]*  \(noop\)$/
+                     /^Notice: .*\/File\[.*\]\/content: current_value \{md5\}[a-f0-9]*, should be/
                   @skip = true
                 else
                   @skip = false
@@ -96,10 +87,27 @@ module Mcollective
       mc.disconnect
     end
 
+    def self.create_view(view)
+      begin
+        @db.save_doc({
+          "_id" => "_design/#{view}",
+          :views => {
+            :all => {
+              :map => self.send("#{view}_map"),
+              :reduce => self.send("#{view}_reduce"),
+            },
+          }
+        })
+        Resque.logger.info("CouchDB #{view} view created")
+      rescue
+        Resque.logger.info("CouchDB #{view} view already created")
+      end
+    end    
+
     def self.changelist_map
-      <<-EOM.gsub(/^ {8}/, "")
+      <<-EOCM.gsub(/^ {8}/, "")
         function(doc) {
-          if ("changes" == doc.collection) {
+          if ("change" == doc.collection) {
             emit([doc._id, 0]);
           }
           if ("report") {
@@ -110,15 +118,38 @@ module Mcollective
             }
           }
         }
-        EOM
+        EOCM
     end
 
     def self.changelist_reduce
-      <<-EOR.gsub(/^ {8}/, "")
+      <<-EOCR.gsub(/^ {8}/, "")
         function(keys, values) {
           return sum(values);
         }
-        EOR
+        EOCR
     end
+
+    def self.risk_map
+      <<-EORM.gsub(/^ {8}/, "")
+        function(doc) {
+          if ("change" == doc.collection) {
+            if (doc.risk) {
+              emit(doc.risk, 1);
+            }
+            else {
+              emit("unknown", 1);
+            } 
+          }
+        }
+        EORM
+    end
+
+    def self.risk_reduce
+      <<-EORR.gsub(/^ {8}/, "")
+        function(keys, values) {
+          return sum(values);
+        }
+        EORR
+    end    
   end
 end

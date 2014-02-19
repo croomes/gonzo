@@ -3,7 +3,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
   $scope.analyse = function() {
     Restangular.oneUrl('nodes', '/releases/1.0.0/check.json').get().then(function(res) {
-      console.log("analyse");      
+      console.log("analyse");
       console.log(res);
     }, function(reason) {
       console.log(reason);
@@ -33,8 +33,32 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
    }, function(reason) {
      console.log(reason);
    });
-  };  
-  
+  };
+
+  $scope.set_risk = function(id, risk) {
+    changeWrapper.get(id).then(function(doc) {
+      doc.risk = risk;
+      changeWrapper.put(doc).then(function(res) {
+      }, function(reason) {
+        console.log(reason);
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  $scope.unset_risk = function(id) {
+    changeWrapper.get(id).then(function(doc) {
+      doc.risk = null;
+      changeWrapper.put(doc).then(function(res) {
+      }, function(reason) {
+        console.log(reason);
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
   $scope.submit = function() {
     changeWrapper.add($scope.text).then(function(res) {
       $scope.text = '';
@@ -69,6 +93,14 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
       console.log(reason);
     });
   };
+
+  $scope.getRiskData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/v1_0_0/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
+      $scope.riskdata = res.rows;
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
   
   $scope.getResultCount = function() {
     return $scope.results.length;
@@ -76,8 +108,28 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
   $scope.results = [];
   $scope.changes = [];
+  $scope.riskdata = [];
   $scope.version = $routeParams.version;
- 
+  $scope.getRiskData();
+    
+  var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
+  $scope.colorFunction = function() {
+  	return function(d, i) {
+      	return colorArray[i];
+      };
+  }
+  $scope.xFunction = function(){
+      return function(d){
+          return d.key;
+      };
+  };
+
+  $scope.yFunction = function(){
+      return function(d){
+          return d.value;
+      };
+  };    
+
   // Summary progressbar
   $interval(function() {
     $scope.dynamic = $scope.getResultCount();

@@ -1,6 +1,5 @@
 <div ng-controller="ChangeCtrl">
   <h1>{{ title }}</h1>
-  
   <tabset>
     <tab heading="Summary">
       <h3>Impact Analysis - {{version}}</h3>
@@ -11,6 +10,30 @@
         <div class="col-md-4">
           <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
           <button ng-click="reset()" type="button" class="btn btn-xs btn-danger">Clear</button>
+        </div>
+      </div> 
+      <div class="row">       
+        <div class="col-md-12">
+          <h3>Assessed Risk</h3>
+          <progress>
+            <bar ng-repeat="bar in riskdata" value="bar.value" type="{{bar.key}}">{{bar.value}}</bar>
+          </progress>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+            <nvd3-pie-chart
+              	data="riskdata"
+                  id="donutLabelsOutsideExample"
+                  width="300"
+                  height="300"
+                  x="xFunction()"
+                  y="yFunction()"
+                  donut="true"
+                  showLabels="true"
+                  donutLabelsOutside="true">
+                  	<svg height="250"></svg>
+              </nvd3-pie-chart>            
         </div>
       </div>
     </tab>
@@ -33,10 +56,19 @@
                 {{node}}
               </span>
             </td>
-            <td>
-              <button ng-click="set_low()" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
-              <button ng-click="set_medium()" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
-              <button ng-click="set_high()" type="button" class="btn btn-xs btn-block btn-danger">High</button>
+            <td ng-switch on="change.risk">
+              <button ng-switch-when="low" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-success">
+                Low <span class="glyphicon glyphicon-remove"></span>
+              </button>
+              <button ng-switch-when="medium" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-warning">
+                Medium <span class="glyphicon glyphicon-remove"></span>
+              </button>
+              <button ng-switch-when="high" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-danger">
+                High <span class="glyphicon glyphicon-remove">
+              </button>              
+              <button ng-switch-default ng-click="set_risk(change._id, 'low')" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
+              <button ng-switch-default ng-click="set_risk(change._id, 'medium')" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
+              <button ng-switch-default ng-click="set_risk(change._id, 'high')" type="button" class="btn btn-xs btn-block btn-danger">High</button>
             </td>
           </tr>
         </tbody>

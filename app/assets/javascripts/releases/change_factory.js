@@ -2,6 +2,7 @@ gonzo.factory('changes', [function() {
 
   var changesdb = new PouchDB('v1_0_0-changes');
   PouchDB.replicate('http://127.0.0.1:5984/v1_0_0', 'v1_0_0-changes', {continuous: true});
+  PouchDB.replicate('v1_0_0-changes', 'http://127.0.0.1:5984/v1_0_0', {continuous: true});
   return changesdb;
 
 }]);
@@ -57,6 +58,32 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
           }
         }
       }, {reduce: false}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(res);
+          }
+        });
+      });
+      return deferred.promise;
+    },
+    get: function(id) {
+      var deferred = $q.defer();
+      changes.get(id, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve(res);
+          }
+        });
+      });
+      return deferred.promise;
+    },
+    put: function(doc) {
+      var deferred = $q.defer();
+      changes.put(doc, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);

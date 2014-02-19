@@ -1,22 +1,22 @@
-var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'gonzoFilters']);
+var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'gonzoFilters']);
 
 gonzo.config([
   '$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.when('/releases/', {
-      templateUrl: '/assets/releases/index.html',      
+      templateUrl: '/assets/releases/index.html',
       controller: 'ReleaseCtrl'
     });
     $routeProvider.when('/releases/:version/summary', {
-      templateUrl: '/assets/releases/summary.html',      
+      templateUrl: '/assets/releases/summary.html',
       controller: 'ChangeCtrl'
     });
     $routeProvider.when('/releases/:version/changes', {
-      templateUrl: '/assets/releases/changes.html',      
+      templateUrl: '/assets/releases/changes.html',
       controller: 'ChangeCtrl'
     });
     $routeProvider.when('/releases/:version/reports', {
-      templateUrl: '/assets/releases/reports.html',      
+      templateUrl: '/assets/releases/reports.html',
       controller: 'ChangeCtrl'
     });
     $routeProvider.when('/nodes/:nodeId', {

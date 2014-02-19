@@ -31,6 +31,14 @@ module MCollective
         end
       end
 
+      def get_last_risk(id)
+        begin
+          @db.get(id)["risk"]
+        rescue => e
+          nil
+        end
+      end      
+
       def save(id, doc)
         before = Time.now.to_f
 
@@ -39,6 +47,12 @@ module MCollective
         if lastrev
           doc.merge!('_rev' => lastrev)
         end
+        
+        # TODO: Refactor to avoid duplicate get
+        risk = get_last_risk(id)
+        if risk
+          doc.merge!('risk' => risk)
+        end  
 
         begin
           @db.save_doc(doc)

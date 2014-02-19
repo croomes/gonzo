@@ -13,12 +13,15 @@
 //= require jquery
 // require jquery_ujs
 //= require pouchdb-1.1.0.min
+//= require d3.min
+//= require nv.d3
 //= require angular
 //= require angular-route
 //= require angular-resource
 //= require lodash
 //= require restangular
 //= require moment.min.js
+//= require angularjs-nvd3-directives
 // require turbolinks
 //= require bootstrap
 //= require ui-bootstrap-tpls-0.11.0-SNAPSHOT.min
