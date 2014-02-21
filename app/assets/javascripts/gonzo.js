@@ -1,12 +1,31 @@
-var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'gonzoFilters']);
+var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'skipFilter', 'timeagoFilter']);
 
 gonzo.config([
-  '$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+  '$locationProvider', '$routeProvider', 'RestangularProvider', function($locationProvider, $routeProvider, RestangularProvider) {
+    api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
     $locationProvider.html5Mode(true);
     $routeProvider.when('/releases/', {
       templateUrl: '/assets/releases/index.html',
-      controller: 'ReleaseCtrl'
+      controller: 'ReleaseListCtrl'
     });
+    $routeProvider.when('/releases/:version', {
+      templateUrl: '/assets/releases/view.html',
+      controller: 'ReleaseEditCtrl',
+      resolve: {
+        release: function(Restangular, $route) {
+          return Restangular.one('releases', $route.current.params.version).get();
+        }
+      }
+    });
+    $routeProvider.when('/releases/:version/check', {
+      templateUrl: '/assets/releases/summary.html',
+      controller: 'ChangeCtrl',
+      resolve: {
+        release: function(Restangular, $route) {
+          return Restangular.one('releases', $route.current.params.version).customPUT(null, 'check', null, api_token);
+        }
+      }      
+    });    
     $routeProvider.when('/releases/:version/summary', {
       templateUrl: '/assets/releases/summary.html',
       controller: 'ChangeCtrl'
@@ -35,28 +54,13 @@ gonzo.config([
       templateUrl: '/assets/agents/index.html',
       controller: 'AgentCtrl'
     });
+    RestangularProvider.setBaseUrl('http://localhost:3000/api/v1');
   }
 ]);
 
-// This breaks CouchDB, but without it can't query Rails...
+// TODO: This breaks CouchDB, but without it we need to specify api_token in individual Restangular callss
 // gonzo.config([
 //   "$httpProvider", function(provider) {
 //     return provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 //   },
 // ]);
-
-angular.module('gonzoFilters', []).filter('skip', function() {
-  return function(input, empty) {
-    // Do nothing is we need to include empty nodes
-    if (empty) {
-      return input;
-    }
-    output = [];
-    input.forEach(function(entry) {
-      if (entry.nodes && entry.nodes.length > 0) {
-        output.push(entry);
-      }
-    })
-    return output;
-  };
-});

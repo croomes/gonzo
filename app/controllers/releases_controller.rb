@@ -5,6 +5,10 @@ class ReleasesController < ApplicationController
   # GET /releases.json
   def index
     @releases = Release.all
+    respond_to do |format|
+      format.html { render html: @releases }
+      format.json { render json: @releases }
+    end    
   end
 
   # GET /releases/1

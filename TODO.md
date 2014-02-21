@@ -2,8 +2,8 @@
 
 ## Releases
 
-* Migrate from rails view to AngularJS
 * Dashboard to show release deployment status
+* Pull in / link to release notes / test evidence
 
 ## Impact Analysis
 
