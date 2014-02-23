@@ -1,4 +1,4 @@
-var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'skipFilter', 'timeagoFilter']);
+var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'skipFilter', 'timeagoFilter', 'capitalizeFilter']);
 
 gonzo.config([
   '$locationProvider', '$routeProvider', 'RestangularProvider', function($locationProvider, $routeProvider, RestangularProvider) {

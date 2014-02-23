@@ -5,7 +5,7 @@
       <h3>Impact Analysis - {{version}}</h3>
       <div class="row">
         <div class="col-md-8">
-          <progressbar max="result_max" value="result_value" dynamic-max="true"><span style="color:black; white-space:nowrap;">{{result_value}} / {{result_max}}</span></progressbar>
+          <progressbar max="result_max" value="result_value" dynamic-max="true">{{result_value}} / {{result_max}}</progressbar>
         </div>
         <div class="col-md-4">
           <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
@@ -16,7 +16,7 @@
         <div class="col-md-12">
           <h3>Assessed Risk</h3>
           <progress max="risk_max" dynamic-max="true">
-            <bar ng-repeat="bar in riskdata" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key}}</bar>
+            <bar ng-repeat="bar in riskdata" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
           </progress>
 
         </div>
