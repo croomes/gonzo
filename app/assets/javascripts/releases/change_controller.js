@@ -96,19 +96,61 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
   $scope.getRiskData = function() {
     Restangular.oneUrl('nodes', 'http://localhost:5984/v1_0_0/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
-      $scope.riskdata = res.rows;
+      results = [];
+      res.rows.forEach(function(row) {
+        row.type = $scope.getRiskType(row.key);
+        results.push(row);
+      });
+      $scope.riskdata = $scope.sortByRisk(results);
     }, function(reason) {
       console.log(reason);
     });
   };
-  
-  $scope.getResultCount = function() {
+
+
+  $scope.getRiskMax = function() {
+    total = 0;
+    $scope.riskdata.forEach(function(entry) {
+      total += entry.value;
+    })
+    return total;
+  }
+
+  $scope.getRiskType = function(risk) {
+    switch (risk) {
+      case 'low':
+        return 'success';
+      case 'medium':
+        return 'warning';
+      case 'high':
+        return 'danger';
+      default:
+        return 'info';
+    }
+  }
+
+  $scope.sortByRisk = function(data) {
+    results = [];
+    tmprisk = {};
+
+    data.forEach(function(row) {
+      tmprisk[row.key] = row;
+    });
+
+    ['high', 'medium', 'low', 'unknown'].forEach(function(risk) {
+      if (tmprisk[risk]) {
+        results.push(tmprisk[risk]);  
+      }
+    })
+    return results;
+  }
+
+  $scope.getResultMax = function() {
     return $scope.results.length;
   }
 
   $scope.results = [];
   $scope.changes = [];
-  $scope.riskdata = [];
   $scope.version = $routeParams.version;
   $scope.getRiskData();
     
@@ -132,8 +174,9 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
   // Summary progressbar
   $interval(function() {
-    $scope.dynamic = $scope.getResultCount();
-    $scope.max = $scope.getResultCount();
+    $scope.result_value = $scope.getResultMax();
+    $scope.result_max = $scope.getResultMax();
+    $scope.risk_max = $scope.getRiskMax();
   },1000);
 
   $scope.$on('newResult', function(event, result) {
