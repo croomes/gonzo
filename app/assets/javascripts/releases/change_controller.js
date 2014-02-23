@@ -176,6 +176,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
   $interval(function() {
     $scope.result_value = $scope.getResultMax();
     $scope.result_max = $scope.getResultMax();
+    $scope.getRiskData();
     $scope.risk_max = $scope.getRiskMax();
   },1000);
 
