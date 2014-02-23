@@ -26,6 +26,7 @@ module Mcollective
       end
 
       mc = rpcclient("puppetenforce", {:color => "false"})
+      # TODO: remove hardcoded version
       mc.check(:environment => "uat") do |resp|
         begin
           resp[:collection] = "report"
@@ -137,7 +138,7 @@ module Mcollective
               emit(doc.risk, 1);
             }
             else {
-              emit("unknown", 1);
+              emit("unassessed", 1);
             } 
           }
         }
