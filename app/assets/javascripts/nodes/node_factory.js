@@ -1,15 +1,15 @@
-gonzo.factory('nodes', ['$interval', function($interval) {
+gonzo.factory('nodes', ['$location', '$interval', function($location, $interval) {
 
   var nodedb = new PouchDB('nodes');
-  PouchDB.replicate('http://127.0.0.1:5984/mcollective', 'nodes', {continuous: true});
+  PouchDB.replicate("http://" + $location.host() + ":5984/mcollective", 'nodes', {continuous: true});
   PouchDB.DEBUG = true;
-  
+
   $interval(function() {
     nodedb.compact(function(err, ok) {
       console.log("compacting nodes");
     })
   },60000); // 1 minute
-  
+
   return nodedb;
 
 }]);
