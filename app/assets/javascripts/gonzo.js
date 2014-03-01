@@ -54,7 +54,7 @@ gonzo.config([
       templateUrl: '/assets/agents/index.html',
       controller: 'AgentCtrl'
     });
-    RestangularProvider.setBaseUrl('http://localhost:3000/api/v1');
+    RestangularProvider.setBaseUrl('/api/v1');
   }
 ]);
 
