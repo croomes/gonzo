@@ -25,7 +25,7 @@ module Mcollective
         create_view(view)
       end
 
-      mc = rpcclient("puppetenforce", {:color => "false"})
+      mc = rpcclient("gonzo", {:color => "false"})
       # TODO: remove hardcoded version
       mc.check(:environment => "uat") do |resp|
         begin
@@ -103,7 +103,7 @@ module Mcollective
       rescue
         Resque.logger.info("CouchDB #{view} view already created")
       end
-    end    
+    end
 
     def self.changelist_map
       <<-EOCM.gsub(/^ {8}/, "")
@@ -139,7 +139,7 @@ module Mcollective
             }
             else {
               emit("unassessed", 1);
-            } 
+            }
           }
         }
         EORM
@@ -151,6 +151,6 @@ module Mcollective
           return sum(values);
         }
         EORR
-    end    
+    end
   end
 end
