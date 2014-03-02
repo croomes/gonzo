@@ -55,4 +55,4 @@ Start with the native console.  Web console available at [http://localhost:5984/
 
 ### Resque background job processor
 
-`rake resque:workers` or `resque:work QUEUE=mcollective_jobs` to watch jobs in the foreground.  Console is available at [http://localhost:3000/resque/overview]
+`rake resque:workers` or `resque:work QUEUE=mcollective_jobs` to watch jobs in the foreground.  Console is available at http://localhost:3000/resque/overview
