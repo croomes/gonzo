@@ -24,6 +24,10 @@ All development is done on a Macbook Pro running:
 
 The web console requires a modern browser that supports IndexedDB (Chrome, Firefox, IE 10+).  Development is against Chrome.
 
+## Installation
+
+See [SETUP.md].
+
 ## Security
 
 There is currently no authentication or access control model in place.  Database replication and API calls are currently in clear text and use default/guessable passwords.  It is not suitable for public-facing deployments.
