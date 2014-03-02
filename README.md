@@ -26,7 +26,7 @@ The web console requires a modern browser that supports IndexedDB (Chrome, Firef
 
 ## Installation
 
-See [https://github.com/croomes/gonzo/blob/master/SETUP.md](SETUP.md).
+See [SETUP.md](https://github.com/croomes/gonzo/blob/master/SETUP.md).
 
 ## Security
 
