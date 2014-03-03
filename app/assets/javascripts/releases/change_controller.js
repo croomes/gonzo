@@ -2,7 +2,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
                  function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
 
   $scope.analyse = function() {
-    Restangular.oneUrl('nodes', '/releases/1.0.0/check.json').get().then(function(res) {
+    Restangular.oneUrl('nodes', "/releases/" + $routeParams.version + "/check.json").get().then(function(res) {
       console.log("analyse");
       console.log(res);
     }, function(reason) {
