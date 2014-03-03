@@ -8,7 +8,7 @@ class ReleasesController < ApplicationController
     respond_to do |format|
       format.html { render html: @releases }
       format.json { render json: @releases }
-    end    
+    end
   end
 
   # GET /releases/1
@@ -64,7 +64,7 @@ class ReleasesController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
+
   # PUT /releases/1/check
   def check
     Resque.enqueue(Mcollective::CheckRelease, @release.id)
@@ -75,9 +75,9 @@ class ReleasesController < ApplicationController
   end
 
   # GET /releases/1/summary
-  def summary  
+  def summary
   end
-  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_release
