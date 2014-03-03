@@ -28,6 +28,9 @@ Gonzo::Application.routes.draw do
           put 'check'
           get 'summary'
         end
+        collection do
+          put 'refresh'
+        end
       end
     end
   end

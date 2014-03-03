@@ -1,13 +1,11 @@
 class Mcollective::Agent
-  require 'MCollective/Couchdb'
+  require 'gonzo/couchdb'
   include Comparable
-  
+
+  # TODO: Not working after move to gonzo/couchdb - use couchrest instead?
   def self.all
-    @db.view('_design/agentlist')['rows'].inspect 
-    # agents = $redis.keys("mcollective::collective::*")
-    # for ckey in collectives
-    #   yield ckey.gsub(/^mcollective\:\:collective\:\:/, ""), ckey
-    # end    
-  end  
-  
+    @db.connect({"db" => "mcollective"})
+    @db.view('_design/agentlist')['rows'].inspect
+  end
+
 end

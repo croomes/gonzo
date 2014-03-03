@@ -3,23 +3,23 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Version</th>        
-      <th>Product</th> 
-      <th>Status</th>        
+      <th>Version</th>
+      <th>Status</th>
       <th></th>
       <th></th>
-      <th></th> 
-      <th></th>     
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="release in releases">
-      <td>{{release.version}}</td>  
-      <td><a ng-click="view(release.version)">{{release.product.name}}</a></td>
-      <td><a href="/releases/{{release.version}}">Show</a></td>
-      <td><a href="/releases/{{release.version}}/edit">Edit</a></td>
-      <td><a href="/releases/{{release.version}}/check">Check</a></td>
-      <td><a href="/releases/{{release.version}}/summary">Results</a></td>
-    </tr>    
+      <td>{{release.slug}}</td>
+      <td>{{release.status}}</td>
+      <td><a href="/releases/{{release.slug}}">Show</a></td>
+      <td><a href="/releases/{{release.slug}}/edit">Edit</a></td>
+      <td><a href="/releases/{{release.slug}}/check">Check</a></td>
+      <td><a href="/releases/{{release.slug}}/summary">Results</a></td>
+    </tr>
   </tbody>
 </table>

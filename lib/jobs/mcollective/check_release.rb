@@ -1,4 +1,4 @@
-require 'mcollective/couchdb'
+require 'gonzo/couchdb'
 require 'mcollective/cache'
 require 'digest/md5'
 
@@ -6,18 +6,19 @@ module Mcollective
   class CheckRelease
     @queue = :mcollective_jobs
     Resque.logger.level = Logger::DEBUG
-    def self.perform(release_id)
-      include MCollective::Couchdb
+    def self.perform(release_name)
+      include Gonzo::Couchdb
 
-      Resque.logger.info("Starting CheckRelease")
+      release = release_name.gsub!(/[\.\-]/, '_')
+
+      Resque.logger.info("Starting CheckRelease for release #{release_name} -> #{release}")
 
       # Setup cache
       MCollective::Cache.setup(:release_results, 600)
 
       # Database names can't contain dots or begin with a digit :(
-      release = Release.find(release_id)
-      dbname = "v" + release.version.gsub!(".", "_")
-      @db = connect("localhost", "5984", dbname)
+      # @db = connect("localhost", "5984", "release_#{release_name}")
+      @db = connect({"db" => "#{release}"})
       @views = ["changelist", "risk"]
 
       # Create helper views
@@ -26,8 +27,7 @@ module Mcollective
       end
 
       mc = rpcclient("gonzo", {:color => "false"})
-      # TODO: remove hardcoded version
-      mc.check(:environment => "uat") do |resp|
+      mc.check(:environment => release) do |resp|
         begin
           resp[:collection] = "report"
           resp[:changes] = []

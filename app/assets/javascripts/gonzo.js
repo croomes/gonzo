@@ -8,6 +8,15 @@ gonzo.config([
       templateUrl: '/assets/releases/index.html',
       controller: 'ReleaseListCtrl'
     });
+    $routeProvider.when('/releases/refresh', {
+      templateUrl: '/assets/releases/index.html',
+      controller: 'ReleaseListCtrl',
+      resolve: {
+        release: function(Restangular, $route) {
+          return Restangular.one('releases').customPUT(null, 'refresh', null, api_token);
+        }
+      }
+    });
     $routeProvider.when('/releases/:version', {
       templateUrl: '/assets/releases/view.html',
       controller: 'ReleaseEditCtrl',
@@ -24,8 +33,8 @@ gonzo.config([
         release: function(Restangular, $route) {
           return Restangular.one('releases', $route.current.params.version).customPUT(null, 'check', null, api_token);
         }
-      }      
-    });    
+      }
+    });
     $routeProvider.when('/releases/:version/summary', {
       templateUrl: '/assets/releases/summary.html',
       controller: 'ChangeCtrl'
