@@ -6,18 +6,15 @@ module Mcollective
   class CheckRelease
     @queue = :mcollective_jobs
     Resque.logger.level = Logger::DEBUG
-    def self.perform(release_name)
+    def self.perform(release)
       include Gonzo::Couchdb
 
-      release = release_name.gsub!(/[\.\-]/, '_')
-
-      Resque.logger.info("Starting CheckRelease for release #{release_name} -> #{release}")
+      Resque.logger.info("Starting CheckRelease for release #{release}")
 
       # Setup cache
       MCollective::Cache.setup(:release_results, 600)
 
-      # Database names can't contain dots or begin with a digit :(
-      # @db = connect("localhost", "5984", "release_#{release_name}")
+      # TODO: Database names can't contain dots or begin with a digit :(
       @db = connect({"db" => "#{release}"})
       @views = ["changelist", "risk"]
 
