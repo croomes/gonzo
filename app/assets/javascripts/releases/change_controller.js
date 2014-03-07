@@ -95,7 +95,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
   };
 
   $scope.getRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/v1_0_0/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
       results = [];
       res.rows.forEach(function(row) {
         row.type = $scope.getRiskType(row.key);
@@ -139,7 +139,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
     ['high', 'medium', 'low', 'unknown'].forEach(function(risk) {
       if (tmprisk[risk]) {
-        results.push(tmprisk[risk]);  
+        results.push(tmprisk[risk]);
       }
     })
     return results;
@@ -149,11 +149,15 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
     return $scope.results.length;
   }
 
+  $scope.getVersion = function() {
+    return angular.lowercase($routeParams.version);
+  }
+
+  $scope.version = $scope.getVersion();
   $scope.results = [];
   $scope.changes = [];
-  $scope.version = $routeParams.version;
   $scope.getRiskData();
-    
+
   var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
   $scope.colorFunction = function() {
   	return function(d, i) {
@@ -170,7 +174,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
       return function(d){
           return d.value;
       };
-  };    
+  };
 
   // Summary progressbar
   $interval(function() {
@@ -178,7 +182,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
     $scope.result_max = $scope.getResultMax();
     $scope.getRiskData();
     $scope.risk_max = $scope.getRiskMax();
-  },1000);
+  },10000);
 
   $scope.$on('newResult', function(event, result) {
     if (result.collection == "report") {

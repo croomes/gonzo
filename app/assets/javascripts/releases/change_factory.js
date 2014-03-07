@@ -1,8 +1,12 @@
-gonzo.factory('changes', [function() {
+gonzo.factory('changes', ['$routeParams', function($routeParams) {
 
-  var changesdb = new PouchDB('v1_0_0-changes');
-  PouchDB.replicate('http://127.0.0.1:5984/v1_0_0', 'v1_0_0-changes', {continuous: true});
-  PouchDB.replicate('v1_0_0-changes', 'http://127.0.0.1:5984/v1_0_0', {continuous: true});
+  // CouchDB breaks on uppercase.
+  // TODO: There are a few other rules we should check for.
+  version = angular.lowercase($routeParams.version);
+
+  var changesdb = new PouchDB(version);
+  PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});
+  PouchDB.replicate(version, 'http://127.0.0.1:5984/' + version, {continuous: true});
   return changesdb;
 
 }]);
