@@ -110,7 +110,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
 
   $scope.getRiskMax = function() {
     total = 0;
-    $scope.riskdata.forEach(function(entry) {
+    $scope.riskdata && $scope.riskdata.forEach(function(entry) {
       total += entry.value;
     })
     return total;
@@ -137,7 +137,7 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
       tmprisk[row.key] = row;
     });
 
-    ['high', 'medium', 'low', 'unknown'].forEach(function(risk) {
+    ['high', 'medium', 'low', 'unassessed'].forEach(function(risk) {
       if (tmprisk[risk]) {
         results.push(tmprisk[risk]);
       }
