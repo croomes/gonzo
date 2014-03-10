@@ -1,7 +1,18 @@
-var gonzo = angular.module('gonzo', ['ngRoute', 'restangular', 'ui.bootstrap', 'nvd3ChartDirectives', 'skipFilter', 'timeagoFilter', 'capitalizeFilter']);
+var gonzo = angular.module('gonzo', [
+  'ngRoute',
+  'restangular',
+  'ui.bootstrap',
+  'nvd3ChartDirectives',
+  'skipFilter',
+  'timeagoFilter',
+  'capitalizeFilter',
+  'md5shortFilter',
+  'revisionFilter'
+]);
 
 gonzo.config([
-  '$locationProvider', '$routeProvider', 'RestangularProvider', function($locationProvider, $routeProvider, RestangularProvider) {
+  '$locationProvider', '$routeProvider', 'RestangularProvider',
+  function($locationProvider, $routeProvider, RestangularProvider) {
     api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
     $locationProvider.html5Mode(true);
     $routeProvider.when('/releases/', {
