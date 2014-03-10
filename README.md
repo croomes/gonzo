@@ -4,6 +4,7 @@
 
 Gonzo lets you assess the impact of your Puppet change before rolling it out across your server estate.  It takes over after continuous integration tools have run their tests and deployed the release to the Puppet Masters, but before clients have been updated.
 
+![Change summary](https://github.com/croomes/gonzo/raw/master/screenshots/change_summary.png)
 ![Change review](https://github.com/croomes/gonzo/raw/master/screenshots/changes.png)
 ![Node inventory](https://github.com/croomes/gonzo/raw/master/screenshots/nodes.png)
 
