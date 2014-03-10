@@ -2,7 +2,11 @@
   <h1>{{ title }}</h1>
   <tabset>
     <tab heading="Summary">
-      <h3>Impact Analysis - {{version}}</h3>
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Impact Analysis - {{version}}</h3>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-8">
           <progressbar max="result_max" value="result_value" dynamic-max="true">{{result_value}} / {{result_max}}</progressbar>
@@ -11,32 +15,62 @@
           <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
           <button ng-click="reset()" type="button" class="btn btn-xs btn-danger">Clear</button>
         </div>
-      </div> 
-      <div class="row">       
+      </div>
+      <div class="row">
         <div class="col-md-12">
-          <h3>Assessed Risk</h3>
+          <h3>Assessed Change Risk</h3>
           <progress max="risk_max" dynamic-max="true">
             <bar ng-repeat="bar in riskdata" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
           </progress>
 
         </div>
       </div>
-<!--       <div class="row">
-        <div class="col-md-4">
-            <nvd3-pie-chart
-              	data="riskdata"
-                  id="donutLabelsOutsideExample"
-                  width="300"
-                  height="300"
-                  x="xFunction()"
-                  y="yFunction()"
-                  donut="true"
-                  showLabels="true"
-                  donutLabelsOutside="true">
-                  	<svg height="250"></svg>
-              </nvd3-pie-chart>            
+
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Release Deployment <small>Risk by node for each tier</small></h3>
+          <!-- {{ hostriskdata }} -->
         </div>
-      </div> -->
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <h4 class="text-right">{{ nodecount_dev }} Dev Nodes</h4>
+        </div>
+        <div class="col-md-7 deployment">
+          <progress max="nodecount_dev" dynamic-max="true">
+            <bar ng-repeat="bar in hostriskdata['dev']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
+          </progress>
+        </div>
+        <div class="col-md-3 deployment">
+          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <h4 class="text-right">{{ nodecount_uat }} UAT Nodes</h4>
+        </div>
+        <div class="col-md-7 deployment">
+          <progress max="nodecount_uat" dynamic-max="true">
+            <bar ng-repeat="bar in hostriskdata['uat']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
+          </progress>
+        </div>
+        <div class="col-md-3 deployment">
+          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <h4 class="text-right">{{ nodecount_prod }} Prod Nodes</h4>
+        </div>
+        <div class="col-md-7 deployment">
+          <progress max="nodecount_prod" dynamic-max="true">
+            <bar ng-repeat="bar in hostriskdata['prod']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
+          </progress>
+        </div>
+        <div class="col-md-3 deployment">
+          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
+        </div>
+      </div>
     </tab>
     <tab heading="Changes">
       <table class="table table-striped">
@@ -50,9 +84,11 @@
         </thead>
         <tbody>
           <tr ng-repeat="change in changes | skip">
-            <td>{{change._id}}</td>
-            <td><pre>{{change.output}}</pre></td>
-            <td>          
+            <td>
+              <a href="#" tooltip-placement="right" tooltip="{{change._id}}">{{change._id | md5short}}</a>
+            </td>
+            <td><pre class=".pre-scrollable">{{change.output}}</pre></td>
+            <td>
               <span ng-repeat="node in change.nodes">
                 {{node}}
               </span>
@@ -66,40 +102,40 @@
               </button>
               <button ng-switch-when="high" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-danger">
                 High <span class="glyphicon glyphicon-remove">
-              </button>              
+              </button>
               <button ng-switch-default ng-click="set_risk(change._id, 'low')" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
               <button ng-switch-default ng-click="set_risk(change._id, 'medium')" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
               <button ng-switch-default ng-click="set_risk(change._id, 'high')" type="button" class="btn btn-xs btn-block btn-danger">High</button>
             </td>
           </tr>
         </tbody>
-      </table>      
+      </table>
     </tab>
     <tab heading="Reports">
-      <table class="table table-striped">   
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Node</th>
             <th>Report revision</th>
-            <th>Timestamp</th> 
-            <th>Status</th>    
+            <th>Timestamp</th>
+            <th>Status</th>
             <th>Changesets</th>
           </tr>
-        </thead>        
+        </thead>
         <tbody>
           <tr ng-repeat="result in results">
             <td>{{result._id}}</td>
-            <td>{{result._rev }}</td>
+            <td>{{result._rev | revision}}</td>
             <td>{{result.msgtime && result.msgtime * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
             <td>{{result.body.statusmsg && result.body.statusmsg || 'CHANGE' }}</td>
-            <td>          
+            <td>
               <span ng-repeat="change in result.changes">
-                  <pre>{{change}}</pre>
+                  <pre>{{change | md5short}}</pre>
               </span>
             </td>
           </tr>
         </tbody>
-      </table>     
+      </table>
     </tab>
   </tabset>
 </div>

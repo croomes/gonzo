@@ -1,5 +1,5 @@
 gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
-                 function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
+function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
 
   $scope.analyse = function() {
     Restangular.oneUrl('nodes', "/releases/" + $routeParams.version + "/check.json").get().then(function(res) {
@@ -82,13 +82,84 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
     });
   };
 
-  $scope.getNodeCount = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/mcollective/_design/nodelist/_view/all?reduce=true').get().then(function(res) {
+  $scope.get_tier = function(host) {
+    // TODO: enforce FQDNs everywhere!!
+    nodeWrapper.get_tier(host + '.croome.org').then(function(res) {
       console.log(res);
-      if (res.rows && res.rows[0].value) {
-        $scope.nodecount = res.rows[0].value;
-        return res.rows[0].value;
-      }
+      return res;
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  $scope.getNodeTierData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/mcollective/_design/tier/_view/all?reduce=true&group=true').get().then(function(res) {
+      res.rows.forEach(function(row) {
+        $scope.tiernodes[row['key']] = row['value'];
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  $scope.getDeploymentData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/mcollective/_design/releasedeployment/_view/all?reduce=true&group=true').get().then(function(res) {
+      res.rows.forEach(function(row) {
+        $scope.deployment[row['key']] = row['value'];
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  $scope.getDeployedCount = function(version, tier) {
+    if ($scope.deployment[version] && $scope.deployment[version][tier]) {
+      return $scope.deployment[version][tier];
+    }
+  };
+
+  $scope.getHostRiskData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+      $scope.hosts = {};
+
+      ['dev', 'uat', 'prod'].forEach(function(cur_tier) {
+        $scope.hostriskdata[cur_tier] = [];
+
+        ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
+          res.rows.forEach(function(row) {
+            if (row['key'] == cur_risk) {
+              Object.keys(row['value']).forEach(function(host, value) {
+                if (! $scope.hosts[host]) {
+                  // TODO: remove hardcoding - need to enforce FQDNs everywhere
+                  nodeWrapper.get_tier(host + '.croome.org').then(function(host_tier) {
+                    if (host_tier == cur_tier) {
+                      found = false;
+                      for(var i = 0, len = $scope.hostriskdata[cur_tier].length; i < len; i++) {
+                        if( $scope.hostriskdata[cur_tier][ i ].key === cur_risk ) {
+                          $scope.hostriskdata[cur_tier][ i ].key++;
+                          found = true;
+                        }
+                      }
+                      if ( ! found) {
+                        $scope.hostriskdata[cur_tier].push({
+                          'key': cur_risk,
+                          'type': $scope.getRiskType(cur_risk),
+                          'value': 1
+                        });
+                      }
+
+                      // Keeping track of hosts lets us only count them once, in order of high, med, low.
+                      $scope.hosts[host] = {'tier': cur_tier, 'risk': cur_risk};
+                    }
+                  }, function(reason) {
+                    console.log(reason);
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
     }, function(reason) {
       console.log(reason);
     });
@@ -102,19 +173,17 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
         results.push(row);
       });
       $scope.riskdata = $scope.sortByRisk(results);
+      console.log($scope.riskdata);
+
+      total = 0;
+      $scope.riskdata.forEach(function(entry) {
+        total += entry.value;
+      })
+      $scope.risk_max = total;
     }, function(reason) {
       console.log(reason);
     });
   };
-
-
-  $scope.getRiskMax = function() {
-    total = 0;
-    $scope.riskdata && $scope.riskdata.forEach(function(entry) {
-      total += entry.value;
-    })
-    return total;
-  }
 
   $scope.getRiskType = function(risk) {
     switch (risk) {
@@ -137,12 +206,33 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
       tmprisk[row.key] = row;
     });
 
-    ['high', 'medium', 'low', 'unassessed'].forEach(function(risk) {
+    ['unassessed', 'low', 'medium', 'high'].forEach(function(risk) {
+    // ['high', 'medium', 'low', 'unassessed'].forEach(function(risk) {
       if (tmprisk[risk]) {
         results.push(tmprisk[risk]);
       }
     })
     return results;
+  }
+
+  $scope.getNodeCount = function() {
+    if (! $scope.nodecount) {
+      nodeWrapper.nodecount().then(function(res) {
+        $scope.nodecount = res.rows[0].value;
+        $scope.getNodeCountByTier();
+      }, function(reason) {
+        console.log(reason);
+      });
+    }
+  }
+
+  // TODO: this sucks, but progress bar doesn't take objects
+  $scope.getNodeCountByTier = function() {
+    if ($scope.nodecount) {
+      $scope.nodecount_dev = $scope.nodecount['dev'];
+      $scope.nodecount_uat = $scope.nodecount['uat'];
+      $scope.nodecount_prod = $scope.nodecount['prod'];
+    }
   }
 
   $scope.getResultMax = function() {
@@ -156,33 +246,40 @@ gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangu
   $scope.version = $scope.getVersion();
   $scope.results = [];
   $scope.changes = [];
+  $scope.tiernodes = {};
+  $scope.deployment = {};
+  $scope.hostriskdata = {};
   $scope.getRiskData();
-
-  var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
-  $scope.colorFunction = function() {
-  	return function(d, i) {
-      	return colorArray[i];
-      };
-  }
-  $scope.xFunction = function(){
-      return function(d){
-          return d.key;
-      };
-  };
-
-  $scope.yFunction = function(){
-      return function(d){
-          return d.value;
-      };
-  };
+  $scope.getDeploymentData();
+  $scope.getHostRiskData();
+  $scope.getNodeTierData();
+  $scope.getNodeCount();
 
   // Summary progressbar
   $interval(function() {
     $scope.result_value = $scope.getResultMax();
     $scope.result_max = $scope.getResultMax();
-    $scope.getRiskData();
-    $scope.risk_max = $scope.getRiskMax();
-  },10000);
+    // $scope.getRiskData();
+    // $scope.risk_max = $scope.getRiskMax();
+  },1000);
+
+  var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
+  $scope.colorFunction = function() {
+    return function(d, i) {
+      return colorArray[i];
+    };
+  }
+  $scope.xFunction = function() {
+    return function(d){
+        return d.key;
+    };
+  };
+
+  $scope.yFunction = function() {
+    return function(d){
+      return d.value;
+    };
+  };
 
   $scope.$on('newResult', function(event, result) {
     if (result.collection == "report") {
