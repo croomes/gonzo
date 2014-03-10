@@ -39,35 +39,8 @@ gonzo.factory('nodeListener', ['$rootScope', 'nodes', function($rootScope, nodes
   });
 }]);
 
-gonzo.factory('nodeWrapper', ['$q', '$rootScope', 'nodes', function($q, $rootScope, nodes) {
-  // 
-  // function map_count(doc) {
-  //   if(doc.type == 'Node') {
-  //     emit(doc.id, null);
-  //   }
-  // }
-  // function reduce_count(keys, values) {
-  //   return sum(values);
-  // }  
-  
+gonzo.factory('nodeWrapper', ['$q', '$rootScope', 'nodes', 'Restangular', function($q, $rootScope, nodes, Restangular) {
   return {
-    // count: function() {
-    //   console.log("in nodeWrapper: count");
-    //   var deferred = $q.defer();
-    //   nodes.query({map: map_count}, {reduce: reduce_count}, function(err, doc) {
-    //     $rootScope.$apply(function() {
-    //       if (err) {
-    //         console.log("nodeWrapper: count: err");
-    //         deferred.reject(err);
-    //       } else {
-    //         console.log("nodeWrapper: count: not err");
-    //         console.log(doc);
-    //         deferred.resolve(doc);
-    //       }
-    //     });
-    //   });
-    //   return deferred.promise;
-    // },
     get: function(id) {
       var deferred = $q.defer();
       nodes.get(id, function(err, doc) {
@@ -131,26 +104,29 @@ gonzo.factory('nodeWrapper', ['$q', '$rootScope', 'nodes', function($q, $rootSco
         });
       });
       return deferred.promise;
-    }
+    },
+    get_tier: function(id) {
+      var deferred = $q.defer();
+      nodes.get(id, function(err, doc) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            if (doc['facts'] && doc['facts']['gonzo_tier']) {
+              deferred.resolve(doc['facts']['gonzo_tier']);
+            }
+            else {
+              deferred.reject("Node doesn't contain gonzo_tier");
+            }
+          }
+        });
+      });
+      return deferred.promise;
+    },
+    nodecount: function() {
+      return Restangular.oneUrl('nodes',
+        'http://localhost:5984/mcollective/_design/nodelist/_view/all?reduce=true&group=false').get();
+    },
   };
 
 }]);
-
-// gonzo.factory('nodeSummary', ['$q', '$rootScope', 'nodes', function($q, $rootScope, nodes) {
-//   function map(doc) {
-//     if(doc.type == 'Node') {
-//       emit(doc.id, null);
-//     }
-//   }
-//   
-//   console.log("nodeSummary");
-//   console.log(nodes);
-//   var nodeCount = nodes.query({map: map}, {reduce: false}, function(err, response) { console.log(err); });
-//   console.log(nodeCount);
-//   console.log(nodes.get("master.croome.org"));
-//   
-//   return {
-//     nodeCount: nodeCount,
-//   }; 
-//   
-// }]);
