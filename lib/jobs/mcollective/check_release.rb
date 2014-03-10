@@ -16,7 +16,7 @@ module Mcollective
 
       # TODO: Database names can't contain dots or begin with a digit :(
       @db = connect({"db" => "#{release}"})
-      @views = ["changelist", "risk"]
+      @views = ["changelist", "risk", "hostrisk"]
 
       # Create helper views
       @views.each do |view|
@@ -146,6 +146,40 @@ module Mcollective
       <<-EORR.gsub(/^ {8}/, "")
         function(keys, values) {
           return sum(values);
+        }
+        EORR
+    end
+
+    def self.hostrisk_map
+      <<-EORM.gsub(/^ {8}/, "")
+        function(doc) {
+          if ("change" == doc.collection) {
+            if (doc.risk) {
+              emit(doc.risk, doc.nodes);
+            }
+            else {
+              emit("unassessed", doc.nodes);
+            }
+          }
+        }
+        EORM
+    end
+
+    def self.hostrisk_reduce
+      <<-EORR.gsub(/^ {8}/, "")
+        function(keys, values) {
+          var hosts = {};
+          values.forEach(function(value) {
+            value.forEach(function(host) {
+              if (! hosts[host]) {
+                hosts[host] = 1;
+              }
+              else {
+                hosts[host]++;
+              }
+            });
+          });
+          return hosts;
         }
         EORR
     end
