@@ -2,7 +2,13 @@ gonzo.factory('changes', ['$routeParams', function($routeParams) {
 
   // CouchDB breaks on uppercase.
   // TODO: There are a few other rules we should check for.
-  version = angular.lowercase($routeParams.version);
+
+  if ($routeParams.version) {
+    version = angular.lowercase($routeParams.version);
+  }
+  else {
+    version = '1.0.0';
+  }
 
   var changesdb = new PouchDB(version);
   PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});

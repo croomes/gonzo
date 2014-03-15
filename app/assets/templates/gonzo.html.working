@@ -1,0 +1,161 @@
+<div>
+     <div id="breadcrumbs">
+      <div>
+        <ul class="breadcrumb">
+          <li title="Summary"><a href="javascript:void(0);">Gonzo</a> </li>
+          <li class="active" title="Nodes with failures">Summary</li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-row">
+    <div class="reverse-button span1" style="visibility: hidden;">
+      <a href="javascript:void(0)"><i class="fa fa-circle-arrow-left fa-3x"></i></a>
+    </div> 
+
+    <!-- the stack view -->
+    <div id="content"><div>
+      <div class="pane-stack">
+        <div class="pane0 stack-pane stack-compact-pane"><div>
+          <div id="state-summary">
+            <div id="state-summary-classes">
+              <div>
+                <h2><span class="heading-label">Releases:</span> <span class="event-type-name">most recent</span></h2>
+                  <div ng-repeat="release in releases">
+
+                    <div id="state-summary-classes-successes" class="state-summary-transitionable" data-transition-to="successes">
+                      <div class="state-summary-graph-text">{{release.slug}}</div>
+                      <div class="state-summary-graph-count">1</div>
+                      <div class="state-summary-graph">
+                        <div class="state-summary-graph-change" style="width: 100%;"></div>
+                      </div>
+                      <div class="clearfix"></div>
+                    </div>
+
+                  </div>
+
+                  <div id="state-summary-classes-all" class="state-summary-transitionable" data-transition-to="all">
+                    <a ui-sref="releases" href="javascript:void(0)">All Releases <i class="fa fa-chevron-right"></i></a>
+                    <a ui-sref="releases">Route 1</a>
+                  </div>
+                </div>
+              </div>
+              <div id="state-summary-nodes">
+                <div>
+                  <h2><span class="heading-label">Nodes:</span> <span class="event-type-name">with events</span></h2>
+
+  <div id="state-summary-nodes-failures" class="state-summary-transitionable state-summary-selected" data-transition-to="failures">
+    <div class="state-summary-graph-text">With Failures</div>
+    <div class="state-summary-graph-count">1</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-failure" style="width: 100%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-nodes-successes" class="state-summary-transitionable" data-transition-to="successes">
+    <div class="state-summary-graph-text">With Changes</div>
+    <div class="state-summary-graph-count">0</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-change" style="width: 0%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-nodes-skips" class="state-summary-transitionable" data-transition-to="skips">
+    <div class="state-summary-graph-text">With Skips</div>
+    <div class="state-summary-graph-count">1</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-skip" style="width: 100%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-nodes-noops" class="state-summary-transitionable" data-transition-to="noops">
+    <div class="state-summary-graph-text">With No-op</div>
+    <div class="state-summary-graph-count">0</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-noop" style="width: 0%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-nodes-all" class="state-summary-transitionable" data-transition-to="all">
+    <a href="javascript:void(0)">All Nodes <i class="fa fa-chevron-right"></i></a>
+  </div>
+  </div></div>
+    <div id="state-summary-resources"><div><h2><span class="heading-label">Resources:</span> <span class="event-type-name">with events</span></h2>
+
+  <div id="state-summary-resources-failures" class="state-summary-transitionable" data-transition-to="failures">
+    <div class="state-summary-graph-text">Failed</div>
+    <div class="state-summary-graph-count">1</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-failure" style="width: 50%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-resources-successes" class="state-summary-transitionable" data-transition-to="successes">
+    <div class="state-summary-graph-text">Changed</div>
+    <div class="state-summary-graph-count">0</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-change" style="width: 0%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-resources-skips" class="state-summary-transitionable" data-transition-to="skips">
+    <div class="state-summary-graph-text">Skipped</div>
+    <div class="state-summary-graph-count">1</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-skip" style="width: 50%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-resources-noops" class="state-summary-transitionable" data-transition-to="noops">
+    <div class="state-summary-graph-text">No-op</div>
+    <div class="state-summary-graph-count">0</div>
+    <div class="state-summary-graph">
+      <div class="state-summary-graph-noop" style="width: 0%;"></div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div id="state-summary-resources-all" class="state-summary-transitionable" data-transition-to="all">
+    <a href="javascript:void(0)">All Resources <i class="fa fa-chevron-right"></i></a>
+  </div>
+  </div></div>
+  </div>
+  </div></div><div class="pane1 stack-pane stack-full-pane"><div><h2><span class="heading-label">Nodes:</span> <span class="event-count">1</span> with <span class="event-type-name">failures</span></h2>
+  <p class="compact-hide"><em>Number of resources affected for each node:</em></p>
+  <div class="list-table-wrapper">
+  <table class="list-table event-count-list">
+    <thead>
+    <tr>
+      <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
+      <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+      <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+      <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+      <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+      <th scope="col" class="indicator"></th>
+    </tr>
+    </thead>
+  </table>
+  <div class="table-container-scroll">
+    <!-- <div class="well" ui-view="releases"></div>  -->
+    <table class="list-table event-count-list" id="nodes-table">
+      <tbody>
+      <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="master" class="text-truncated">master</div></td>
+  <td class="numeric"><span>1</span></td>
+  <td class="numeric"><span>1</span></td>
+  <td class="numeric"><span>–</span></td>
+  <td class="numeric"><span>–</span></td>
+  <td class="transition"><i class="fa fa-chevron-right"></i></td>
+  </tr></tbody>
+    </table>
+  </div>
+
+  </div>
+  </div></div></div></div></div><!-- /#content -->
+  </div>
+<!-- </div>
