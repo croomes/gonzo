@@ -78,6 +78,10 @@ html:not([data-useragent*='MSIE 10.0']) .list-table-wrapper tr:not(.list-contain
     width: 7em;
     white-space: nowrap;
 }
+.list-table th.reportid, .list-table td.reportid {
+    width: 7em;
+    white-space: nowrap;
+}
 .list-table th.numeric, .list-table td.numeric {
     width: 8em;
 }

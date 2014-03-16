@@ -1,0 +1,55 @@
+<div class="pane3 stack-pane stack-full-pane">
+  <div>
+    <h2>
+      <span class="heading-label event">Release:</span> {{ version }}<br />
+      <span class="heading-label event">Change:</span> {{ change._id }}
+    </h2>
+    <div class="attribute-table-wrapper">
+      <table class="attribute-table event">
+        <tbody>
+          <tr><th scope="row">Change reference:</th><td>{{ change._id }}</td></tr>
+          <tr><th scope="row">Change revision:</th><td>{{ change._rev }}</td></tr>
+          <tr><th scope="row">Assessed risk:</th>
+            <td class="changeid" ng-switch on="change.risk">
+              <div ng-switch-when="low">
+                <div ng-click="unset_risk(change._id)" class="change-indicator change-indicator-low"></div>
+                Low
+              </div>
+              <div ng-switch-when="medium">
+                <div ng-click="unset_risk(change._id)" class="change-indicator change-indicator-medium"></div>
+                Medium
+              </div>
+              <div ng-switch-when="high">
+                <div ng-click="unset_risk(change._id)" class="change-indicator change-indicator-high"></div>
+                High
+              </div>
+              <div ng-switch-default>
+                <div ng-click="set_risk(change._id, 'low')" class="change-indicator change-indicator-low"></div>
+                <div ng-click="set_risk(change._id, 'medium')" class="change-indicator change-indicator-medium"></div>
+                <div ng-click="set_risk(change._id, 'high')" class="change-indicator change-indicator-high"></div>
+                Unassessed
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Change output</h3>
+    <div class="code">
+      <pre>{{change.output}}</pre>
+    </div>
+
+    <h3>Node details</h3>
+    <div class="attribute-table-wrapper">
+      <table class="attribute-table event-details">
+        <tbody>
+          <tr><th scope="row">Property:</th><td>–</td></tr>
+          <tr><th scope="row">Old Value:</th><td>–</td></tr>
+          <tr><th scope="row">New Value:</th><td>–</td></tr>
+          <tr><th scope="row">Message:</th><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <a class="jump-link spawn-link" target="_blank" href="/reports/master/2014-03-16T11:52:36.271Z">View run report</a> -->
+  </div>
+</div>

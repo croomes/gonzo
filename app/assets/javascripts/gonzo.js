@@ -4,7 +4,7 @@ var gonzo = angular.module('gonzo', [
   'ui.bootstrap',
   'ui.router',
   'nvd3ChartDirectives',
-  'skipFilter',
+  // 'skipFilter',
   'timeagoFilter',
   'capitalizeFilter',
   'md5shortFilter',
@@ -55,7 +55,7 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
       }
     })
     .state("releases.detail", {
-      url: "/:version/",
+      url: "/:version",
       // onEnter: function() {
       //   console.log("releases.detail onEnter");
       // },
@@ -69,7 +69,20 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
          },
         'detail@': {
            templateUrl: '/assets/releases/detail.html',
-           controller: 'ChangeCtrl'
+           controller: 'ChangeListCtrl'
+         },
+      }
+    })
+    .state("releases.detail.change", {
+      url: "/change/:changeid",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/changes/summary.html',
+           controller: 'ChangeSummaryCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/changes/detail.html',
+           controller: 'ChangeDetailCtrl'
          },
       }
     })
@@ -91,6 +104,7 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
   }]);
 
 gonzo.run(['$state', '$rootScope', '$urlRouter', function ($state, $rootScope, $urlRouter) {
+  console.log("gonzo run");
   console.log($state);
   // $state.transitionTo('index');
 
@@ -110,6 +124,18 @@ gonzo.run(['$state', '$rootScope', '$urlRouter', function ($state, $rootScope, $
   //     // and one special property 'targetView'
   //     // viewConfig.targetView
   // });
+
+  // $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+  //   console.log('$stateChangeStart');
+  // });
+  // $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+  //   console.log('$stateChangeSuccess');
+  // });
+  // $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+  //   console.log('$stateChangeError:');
+  //   console.log(error);
+  // });
+
 }])
 
 // gonzo.config([

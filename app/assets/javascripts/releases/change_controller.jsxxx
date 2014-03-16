@@ -1,5 +1,6 @@
 gonzo.controller('ChangeCtrl', ['$scope', '$stateParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
 function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
+  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXX Loading ChangeCtrl");
   console.log($stateParams);
   // console.log($scope.params);
   $scope.analyse = function() {
@@ -83,10 +84,19 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
     });
   };
 
+  $scope.get = function(id) {
+    changeWrapper.get(id).then(function(res) {
+      console.log("Loaded change");
+      $scope.change = res;
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
   $scope.get_tier = function(host) {
     // TODO: enforce FQDNs everywhere!!
     nodeWrapper.get_tier(host + '.croome.org').then(function(res) {
-      console.log(res);
+      // console.log(res);
       return res;
     }, function(reason) {
       console.log(reason);
@@ -174,7 +184,7 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
         results.push(row);
       });
       $scope.riskdata = $scope.sortByRisk(results);
-      console.log($scope.riskdata);
+      // console.log($scope.riskdata);
 
       total = 0;
       $scope.riskdata.forEach(function(entry) {
@@ -241,11 +251,18 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   }
 
   $scope.getVersion = function() {
-    console.log("Setting version to: " + $stateParams.version);
+    // console.log("Setting version to: " + $stateParams.version);
     return angular.lowercase($stateParams.version);
   }
 
+  // Set data from params
   $scope.version = $scope.getVersion();
+  if ($stateParams.changeid) {
+    console.log("Loading change");
+    $scope.get($stateParams.changeid);
+  }
+
+  // Load additional data
   $scope.results = [];
   $scope.changes = [];
   $scope.tiernodes = {};
@@ -257,13 +274,30 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   $scope.getNodeTierData();
   $scope.getNodeCount();
 
+  console.log("change=");
+  console.log($scope.change);
+
+  console.log("changes=");
+  console.log($scope.changes);
+
+  console.log("results=");
+  console.log($scope.results); 
+
   // Summary progressbar
   $interval(function() {
     $scope.result_value = $scope.getResultMax();
     $scope.result_max = $scope.getResultMax();
     // $scope.getRiskData();
     // $scope.risk_max = $scope.getRiskMax();
-  },1000);
+    console.log("change=");
+    console.log($scope.change);
+
+    console.log("changes=");
+    console.log($scope.changes); 
+
+    console.log("results=");
+    console.log($scope.results); 
+  },10000);
 
   var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
   $scope.colorFunction = function() {

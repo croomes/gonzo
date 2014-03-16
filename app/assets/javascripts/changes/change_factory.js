@@ -1,4 +1,4 @@
-gonzo.factory('changes', ['$stateParams', function($stateParams) {
+gonzo.factory('changedb', ['$stateParams', function($stateParams) {
 
   // CouchDB breaks on uppercase.
   // TODO: There are a few other rules we should check for.
@@ -10,20 +10,21 @@ gonzo.factory('changes', ['$stateParams', function($stateParams) {
     version = '1.0.0';
   }
 
-  var changesdb = new PouchDB(version);
+  console.log("change factory, version: " + version);
+  var changedb = new PouchDB(version);
   PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});
   PouchDB.replicate(version, 'http://127.0.0.1:5984/' + version, {continuous: true});
-  return changesdb;
+  return changedb;
 
 }]);
 
-gonzo.factory('listener', ['$rootScope', 'changes', function($rootScope, changes) {
-  changes.changes({
+gonzo.factory('listener', ['$rootScope', 'changedb', function($rootScope, changedb) {
+  changedb.changes({
     continuous: true,
     onChange: function(change) {
       if (!change.deleted) {
         $rootScope.$apply(function() {
-          changes.get(change.id, function(err, doc) {
+          changedb.get(change.id, function(err, doc) {
             $rootScope.$apply(function() {
               if (err) console.log(err);
               // console.log("listener: new result");
@@ -45,7 +46,7 @@ gonzo.factory('listener', ['$rootScope', 'changes', function($rootScope, changes
   });
 }]);
 
-gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $rootScope, changes) {
+gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changedb', function($q, $rootScope, changedb) {
 
   return {
     query: function(text) {
@@ -54,7 +55,7 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
         type: 'result',
         text: text
       };
-      changes.query({map:
+      changedb.query({map:
         function(doc) {
           if ("changes" == doc.collection) {
             emit([doc._id, 0], doc.output);
@@ -78,9 +79,34 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
       });
       return deferred.promise;
     },
+    get_changes: function(text) {
+      var deferred = $q.defer();
+      changedb.query({map:
+        function(doc) {
+          if ("change" == doc.collection) {
+            emit([doc._id, 0], doc);
+          }
+        }
+      }, {reduce: false}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            changes = [];
+            res.rows.forEach(function(element, index) {
+              if (element.value) {
+                changes.push(element.value);
+              }
+            })
+            deferred.resolve(changes);
+          }
+        });
+      });
+      return deferred.promise;
+    },
     get: function(id) {
       var deferred = $q.defer();
-      changes.get(id, function(err, res) {
+      changedb.get(id, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);
@@ -93,11 +119,14 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
     },
     put: function(doc) {
       var deferred = $q.defer();
-      changes.put(doc, function(err, res) {
+      changedb.put(doc, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);
           } else {
+            console.log("put ok:");
+            console.log(res);
+            console.log(doc);
             deferred.resolve(res);
           }
         });
@@ -110,7 +139,7 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
         type: 'result',
         text: text
       };
-      changes.post(doc, function(err, res) {
+      changedb.post(doc, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);
@@ -123,12 +152,12 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
     },
     remove: function(id) {
       var deferred = $q.defer();
-      changes.get(id, function(err, doc) {
+      changedb.get(id, function(err, doc) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);
           } else {
-            changes.remove(doc, function(err, res) {
+            changedb.remove(doc, function(err, res) {
               $rootScope.$apply(function() {
                 if (err) {
                   deferred.reject(err);
@@ -144,7 +173,7 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
     },
     alldocs: function() {
       var deferred = $q.defer();
-      changes.allDocs({include_docs: true}, function(err, res) {
+      changedb.allDocs({include_docs: true}, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);
@@ -157,8 +186,8 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changes', function($q, $roo
     },
     bulkdocs: function(docs) {
       var deferred = $q.defer();
-      console.log(docs);
-      changes.bulkDocs({docs: docs}, function(err, res) {
+      // console.log(docs);
+      changedb.bulkDocs({docs: docs}, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
             deferred.reject(err);

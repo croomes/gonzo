@@ -1,0 +1,35 @@
+<div class="pane1 stack-pane stack-compact-pane">
+  <div>
+    <h2>
+    <span class="heading-label">Changes:</span> <span class="event-type-name">Release {{ version }}</span>
+    </h2>
+    <div class="list-table-wrapper">
+      <table class="list-table change-count-list">
+        <thead>
+          <tr>
+            <th scope="col" class="primary sort-header" data-sort="change"><span>Change</span></th>
+            <th scope="col" class="indicator"></th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-container-scroll">
+        <table class="list-table change-count-list" id="changes-table">
+          <tbody>
+            <tr ng-repeat="changeitem in changes"> <!-- | skip removed, doesn't handle nulls well TODO -->
+              <td class="primary" ng-switch on="changeitem.risk">
+                <div ng-switch-when="low"    class="change-indicator change-indicator-low"></div>
+                <div ng-switch-when="medium" class="change-indicator change-indicator-medium"></div>
+                <div ng-switch-when="high"   class="change-indicator change-indicator-high"></div>
+                <div ng-switch-default       class="change-indicator change-indicator-unassessed"></div>
+                <div title="{{changeitem.output}}" class="text-truncated">
+                  <a ui-sref="releases.detail.change({changeid: changeitem._id})">{{changeitem._id | md5short}}</a>
+                </div>
+              </td>
+              <td class="transition"><i class="icon-chevron-right"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
