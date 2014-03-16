@@ -28,7 +28,9 @@
                 <span class="badge alert-warning">{{deployment[release.slug]['uat']}}</span>
                 <span class="badge alert-danger">{{deployment[release.slug]['prod']}}</span>
               </td>
-              <td class="transition"><i class="fa fa-chevron-right"></i></td>
+              <td class="transition">
+                <a ui-sref='releases.detail({version: release.slug})'><i class="fa fa-chevron-right"></i></a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -36,3 +38,5 @@
     </div>
   </div>
 </div>
+
+<!-- <td class="transition"><a href="/releases/{{release.slug}}/"><i class="fa fa-chevron-right"></i></a></td> -->

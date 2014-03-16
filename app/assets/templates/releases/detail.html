@@ -1,0 +1,151 @@
+<div class="pane2 stack-pane stack-full-pane">
+  <div>
+    <h2 title="{{release.slug}}"><span class="heading-label">Release:</span> <span class="class-name">{{release.slug}}</span></h2>
+    <ul class="nav nav-tabs" id="tabcontrol">
+      <li id="summary-tab-control" class="active">
+        <a href="#summary-tab" data-toggle="tab" data-url-fragment="summary">Summary</a>
+      </li>
+      <li id="nodes-tab-control">
+        <a href="#changes-tab" data-toggle="tab" data-url-fragment="changes">Changes</a>
+      </li>
+      <li id="resources-tab-control">
+        <a href="#resources-tab" data-toggle="tab" data-url-fragment="resources">Reports</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+
+      <!-- SUMMARY TAB -->
+      <div class="tab-pane active" id="summary-tab"><div><p class="compact-hide">Number of resources affected for each node:</p>
+        <div class="list-table-wrapper">
+          <table class="list-table event-count-list">
+            <thead>
+              <tr>
+                <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+                <th scope="col" class="indicator"></th>
+              </tr>
+            </thead>
+          </table>
+          <div class="table-container-scroll">
+            <table class="list-table event-count-list" id="nodes-table">
+              <tbody>
+                <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="master" class="text-truncated">master</div></td>
+                <td class="numeric"><span>1</span></td>
+                <td class="numeric"><span>1</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="transition"><i class="icon-chevron-right"></i></td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- CHANGES TAB -->
+      <div class="tab-pane" id="changes-tab"><div><p class="compact-hide">Changes to be implemented across all nodes:</p>
+        <div class="list-table-wrapper">
+          <table class="list-table event-count-list">
+            <thead>
+              <tr>
+                <th scope="col" class="changeid sort-header sort-down" data-sort="changeid"><span>Change</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="change"><span>Change</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="risk"><span>Risk</span></th>
+                <th scope="col" class="indicator"></th>
+              </tr>
+            </thead>
+          </table>
+          <div class="table-container-scroll">
+            <table class="list-table event-count-list" id="changes-table">
+              <tbody>
+                <tr ng-repeat="change in changes | skip">
+                  <td class="changeid" ng-switch on="change.risk">
+                    <div ng-switch-when="low"    class="change-indicator change-indicator-low"></div>
+                    <div ng-switch-when="medium" class="change-indicator change-indicator-medium"></div>
+                    <div ng-switch-when="high"   class="change-indicator change-indicator-high"></div> 
+                    <div title="{{change._id}}" class="text-truncated">{{change._id | md5short}}</div>
+                  </td>
+                  <td class="code"><pre>{{change.output}}</pre></td>
+                  <td class="risk" ng-switch on="change.risk">
+                    <button ng-switch-when="low" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-success">
+                      Low <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <button ng-switch-when="medium" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-warning">
+                      Medium <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <button ng-switch-when="high" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-danger">
+                      High <span class="glyphicon glyphicon-remove">
+                    </button>
+                    <button ng-switch-default ng-click="set_risk(change._id, 'low')" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
+                    <button ng-switch-default ng-click="set_risk(change._id, 'medium')" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
+                    <button ng-switch-default ng-click="set_risk(change._id, 'high')" type="button" class="btn btn-xs btn-block btn-danger">High</button>
+                  </td>
+                  <td class="transition"><i class="icon-chevron-right"></i></td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+
+      <div class="tab-pane" id="nodes-tab"><div><p class="compact-hide">Number of resources affected for each node:</p>
+        <div class="list-table-wrapper">
+          <table class="list-table event-count-list">
+            <thead>
+              <tr>
+                <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+                <th scope="col" class="indicator"></th>
+              </tr>
+            </thead>
+          </table>
+          <div class="table-container-scroll">
+            <table class="list-table event-count-list" id="nodes-table">
+              <tbody>
+                <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="master" class="text-truncated">master</div></td>
+                <td class="numeric"><span>1</span></td>
+                <td class="numeric"><span>1</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="transition"><i class="icon-chevron-right"></i></td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- REPORTS TAB -->
+      <div class="tab-pane" id="resources-tab"><div><p class="compact-hide">Number of nodes affected for each resource:</p>
+        <div class="list-table-wrapper">
+          <table class="list-table event-count-list">
+            <thead>
+              <tr>
+                <th scope="col" class="primary sort-header sort-down" data-sort="resource"><span>Resource</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+                <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+                <th scope="col" class="indicator"></th>
+              </tr>
+            </thead>
+          </table>
+          <div class="table-container-scroll">
+            <table class="list-table event-count-list" id="resources-table">
+              <tbody>
+                <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="Package[hiera-http]" class="text-truncated">Package[<em>hiera-http</em>]</div></td>
+                <td class="numeric"><span>1</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="numeric"><span>–</span></td>
+                <td class="transition"><i class="icon-chevron-right"></i></td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div></div>

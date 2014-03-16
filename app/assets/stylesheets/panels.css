@@ -72,7 +72,12 @@ html:not([data-useragent*='MSIE 10.0']) .list-table-wrapper tr:not(.list-contain
 }
 .list-table th.primary .text-truncated, .list-table td.primary .text-truncated {
     display: inline-block;
-    width: 100%}
+    width: 100%
+}
+.list-table th.changeid, .list-table td.changeid {
+    width: 7em;
+    white-space: nowrap;
+}
 .list-table th.numeric, .list-table td.numeric {
     width: 8em;
 }
@@ -80,6 +85,12 @@ html:not([data-useragent*='MSIE 10.0']) .list-table-wrapper tr:not(.list-contain
     width: 8em;
 }
 .list-table th.string, .list-table td.string {
+    width: 8em;
+}
+.list-table th.code, .list-table td.code {
+    width: 100%;
+}
+.list-table th.risk, .list-table td.risk {
     width: 8em;
 }
 .list-table th.timestamp, .list-table td.timestamp {
@@ -342,6 +353,11 @@ h4 {
     font-size: 16px;
     margin-right: -10px;
     white-space: nowrap;
+}
+pre {
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
 }
 .stack-hidden-pane {
     position: absolute;
@@ -698,7 +714,7 @@ h2+.state-summary-transitionable {
     height: 100%;
     overflow-y: scroll;
 }
-.event-indicator {
+.event-indicator, .change-indicator {
     width: 10px;
     height: 1.5em;
     margin: 0 auto;
@@ -725,6 +741,17 @@ h2+.state-summary-transitionable {
 .event-indicator-skip {
     background-color: #7c6aab;
 }
+
+.change-indicator-high {
+    background-color: #d9534f;
+}
+.change-indicator-medium {
+    background-color: #f0ad4e;
+}
+.change-indicator-low {
+    background-color: #5cb85c;
+}
+
 .list-container-selected {
     background-color: #c0eafd;
 }

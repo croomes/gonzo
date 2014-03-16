@@ -1,8 +1,9 @@
-gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
-function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
-
+gonzo.controller('ChangeCtrl', ['$scope', '$stateParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
+function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
+  console.log($stateParams);
+  // console.log($scope.params);
   $scope.analyse = function() {
-    Restangular.oneUrl('nodes', "/releases/" + $routeParams.version + "/check.json").get().then(function(res) {
+    Restangular.oneUrl('nodes', "/releases/" + $stateParams.version + "/check.json").get().then(function(res) {
       console.log("analyse");
       console.log(res);
     }, function(reason) {
@@ -240,7 +241,8 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
   }
 
   $scope.getVersion = function() {
-    return angular.lowercase($routeParams.version);
+    console.log("Setting version to: " + $stateParams.version);
+    return angular.lowercase($stateParams.version);
   }
 
   $scope.version = $scope.getVersion();

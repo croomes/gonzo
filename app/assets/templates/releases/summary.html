@@ -1,141 +1,41 @@
-<div ng-controller="ChangeCtrl">
-  <h1>{{ title }}</h1>
-  <tabset>
-    <tab heading="Summary">
-      <div class="row">
-        <div class="col-md-12">
-          <h3>Impact Analysis - {{version}}</h3>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-8">
-          <progressbar max="result_max" value="result_value" dynamic-max="true">{{result_value}} / {{result_max}}</progressbar>
-        </div>
-        <div class="col-md-4">
-          <button ng-click="analyse()" type="button" class="btn btn-xs btn-success">Restart</button>
-          <button ng-click="reset()" type="button" class="btn btn-xs btn-danger">Clear</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <h3>Assessed Change Risk</h3>
-          <progress max="risk_max" dynamic-max="true">
-            <bar ng-repeat="bar in riskdata" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
-          </progress>
-
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <h3>Release Deployment <small>Risk by node for each tier</small></h3>
-          <!-- {{ hostriskdata }} -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <h4 class="text-right">{{ nodecount_dev }} Dev Nodes</h4>
-        </div>
-        <div class="col-md-7 deployment">
-          <progress max="nodecount_dev" dynamic-max="true">
-            <bar ng-repeat="bar in hostriskdata['dev']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
-          </progress>
-        </div>
-        <div class="col-md-3 deployment">
-          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <h4 class="text-right">{{ nodecount_uat }} UAT Nodes</h4>
-        </div>
-        <div class="col-md-7 deployment">
-          <progress max="nodecount_uat" dynamic-max="true">
-            <bar ng-repeat="bar in hostriskdata['uat']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
-          </progress>
-        </div>
-        <div class="col-md-3 deployment">
-          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <h4 class="text-right">{{ nodecount_prod }} Prod Nodes</h4>
-        </div>
-        <div class="col-md-7 deployment">
-          <progress max="nodecount_prod" dynamic-max="true">
-            <bar ng-repeat="bar in hostriskdata['prod']" value="bar.value" type="{{bar.type}}">{{bar.value}} {{bar.key | capitalize}}</bar>
-          </progress>
-        </div>
-        <div class="col-md-3 deployment">
-          <button ng-click="deploy()" type="button" class="btn btn-xs btn-primary">Deploy</button>
-        </div>
-      </div>
-    </tab>
-    <tab heading="Changes">
-      <table class="table table-striped">
+<div class="pane1 stack-pane stack-compact-pane">
+  <div>
+    <h2>
+    <span class="heading-label">Releases:</span> <span class="event-count">1</span> with <span class="event-type-name">failures</span>
+    </h2>
+    <p class="compact-hide"><em>Number of nodes affected for each class:</em></p>
+    <div class="list-table-wrapper">
+      <table class="list-table event-count-list">
         <thead>
           <tr>
-            <th>Changeset</th>
-            <th>Change</th>
-            <th>Nodes</th>
-            <th>Risk</th>
+            <th scope="col" class="primary sort-header sort-down" data-sort="containing-class"><span>Release</span></th>
+            <th scope="col" class="numeric sort-header" data-sort="failures"><span>Status</span></th>
+            <th scope="col" class="numeric sort-header" data-sort="skips"><span>Deployment</span></th>
+            <th scope="col" class="indicator"></th>
           </tr>
         </thead>
-        <tbody>
-          <tr ng-repeat="change in changes | skip">
-            <td>
-              <a href="#" tooltip-placement="right" tooltip="{{change._id}}">{{change._id | md5short}}</a>
-            </td>
-            <td><pre class=".pre-scrollable">{{change.output}}</pre></td>
-            <td>
-              <span ng-repeat="node in change.nodes">
-                {{node}}
-              </span>
-            </td>
-            <td ng-switch on="change.risk">
-              <button ng-switch-when="low" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-success">
-                Low <span class="glyphicon glyphicon-remove"></span>
-              </button>
-              <button ng-switch-when="medium" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-warning">
-                Medium <span class="glyphicon glyphicon-remove"></span>
-              </button>
-              <button ng-switch-when="high" ng-click="unset_risk(change._id)" type="button" class="btn btn-xs btn-block btn-danger">
-                High <span class="glyphicon glyphicon-remove">
-              </button>
-              <button ng-switch-default ng-click="set_risk(change._id, 'low')" type="button" class="btn btn-xs btn-block btn-success ">Low</button>
-              <button ng-switch-default ng-click="set_risk(change._id, 'medium')" type="button" class="btn btn-xs btn-block btn-warning">Medium</button>
-              <button ng-switch-default ng-click="set_risk(change._id, 'high')" type="button" class="btn btn-xs btn-block btn-danger">High</button>
-            </td>
-          </tr>
-        </tbody>
       </table>
-    </tab>
-    <tab heading="Reports">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Node</th>
-            <th>Report revision</th>
-            <th>Timestamp</th>
-            <th>Status</th>
-            <th>Changesets</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="result in results">
-            <td>{{result._id}}</td>
-            <td>{{result._rev | revision}}</td>
-            <td>{{result.msgtime && result.msgtime * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
-            <td>{{result.body.statusmsg && result.body.statusmsg || 'CHANGE' }}</td>
-            <td>
-              <span ng-repeat="change in result.changes">
-                  <pre>{{change | md5short}}</pre>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </tab>
-  </tabset>
+      <div class="table-container-scroll">
+        <table class="list-table event-count-list" id="classes-table">
+          <tbody>
+            <tr ng-repeat="release in releases" class="list-container-selected">
+              <td class="primary">
+                <div class="event-indicator event-indicator-failure"></div> 
+                <div title="{{release.slug}}" class="text-truncated">
+                  <a ui-sref='releases.detail({version: release.slug})'>{{release.slug}}</a>
+                </div>
+              </td>
+              <td class="string"><span>{{release.status}}</span></td>
+              <td>
+                <span class="badge alert-success">{{deployment[release.slug]['dev']}}</span>
+                <span class="badge alert-warning">{{deployment[release.slug]['uat']}}</span>
+                <span class="badge alert-danger">{{deployment[release.slug]['prod']}}</span>
+              </td>
+              <td class="transition"><i class="icon-chevron-right"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

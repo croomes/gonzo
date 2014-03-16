@@ -1,10 +1,10 @@
-gonzo.factory('changes', ['$routeParams', function($routeParams) {
+gonzo.factory('changes', ['$stateParams', function($stateParams) {
 
   // CouchDB breaks on uppercase.
   // TODO: There are a few other rules we should check for.
 
-  if ($routeParams.version) {
-    version = angular.lowercase($routeParams.version);
+  if ($stateParams.version) {
+    version = angular.lowercase($stateParams.version);
   }
   else {
     version = '1.0.0';

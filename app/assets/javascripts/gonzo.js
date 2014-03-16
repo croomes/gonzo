@@ -25,25 +25,8 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     .state("index", {
       url: "/",
       views: {
-        'toc': {
-           templateUrl: '/assets/toc.html',
-           controller: 'ReleaseListCtrl'
-         },
-        'detail': {
-           templateUrl: '/assets/releases.html',
-           controller: 'ReleaseListCtrl'
-         },
-      }
-    })
-    .state("releases", {
-      url: "/releases",
-      views: {
-        'toc': {
-           templateUrl: '/assets/toc.html',
-           controller: 'ReleaseListCtrl'
-         },
         'summary': {
-           templateUrl: '/assets/releases/summary.html',
+           templateUrl: '/assets/toc.html',
            controller: 'ReleaseListCtrl'
          },
         'detail': {
@@ -52,15 +35,53 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
          },
       }
     })
-    .state("nodes", {
-      url: "/nodes",
+    .state("releases", {
+      url: "/releases",
+      // onEnter: function() {
+      //   console.log("releases onEnter");
+      // },
+      // onExit: function() {
+      //   console.log("releases onExit");
+      // },
       views: {
-        'toc': {
+        'summary@': {
            templateUrl: '/assets/toc.html',
            controller: 'ReleaseListCtrl'
          },
-        'detail': {
-           templateUrl: '/assets/nodes.html',
+        'detail@': {
+           templateUrl: '/assets/releases/list.html',
+           controller: 'ReleaseListCtrl'
+         },
+      }
+    })
+    .state("releases.detail", {
+      url: "/:version/",
+      // onEnter: function() {
+      //   console.log("releases.detail onEnter");
+      // },
+      // onExit: function() {
+      //   console.log("releases.detail onExit");
+      // },
+      views: {
+        'summary@': {
+           templateUrl: '/assets/releases/summary.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/releases/detail.html',
+           controller: 'ChangeCtrl'
+         },
+      }
+    })
+    .state("nodes", {
+      url: "/nodes",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/toc.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/nodes/list.html',
            controller: 'NodeCtrl'
          },
       }
@@ -69,8 +90,26 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     RestangularProvider.setBaseUrl('/api/v1');
   }]);
 
-gonzo.run(['$state', function ($state) {
-  $state.transitionTo('index');
+gonzo.run(['$state', '$rootScope', '$urlRouter', function ($state, $rootScope, $urlRouter) {
+  console.log($state);
+  // $state.transitionTo('index');
+
+  // $rootScope.$on('$locationChangeSuccess', function(evt) {
+  //   // console.log(evt);
+  //   // Halt state change from even starting
+  //   evt.preventDefault();
+  //   // Perform custom logic
+  //   var meetsRequirement = true;
+  //   // Continue with the update and state transition if logic allows
+  //   if (meetsRequirement) $urlRouter.sync();
+  // });
+
+  // $rootScope.$on('$viewContentLoading', function(event, viewConfig) {
+  //   console.log(viewConfig);
+  //     // Access to all the view config properties.
+  //     // and one special property 'targetView'
+  //     // viewConfig.targetView
+  // });
 }])
 
 // gonzo.config([
