@@ -50,8 +50,8 @@
           <table class="list-table change-count-list">
             <thead>
               <tr>
-                <th scope="col" class="string sort-header" data-sort="risk"><span>Risk</span></th>
-                <th scope="col" class="numeric sort-header" data-sort="change"><span>Change</span></th>
+                <th scope="col" class="risk">Risk</th>
+                <th scope="col" class="primart sort-header" data-sort="change"><span>Change</span></th>
                 <th scope="col" class="indicator"></th>
               </tr>
             </thead>
@@ -59,21 +59,21 @@
           <div class="table-container-scroll">
             <table class="list-table change-count-list" id="changes-table">
               <tbody>
-                <tr ng-repeat="change in changes"> <!-- removed skip filter TODO -->
-                  <td class="changeid" ng-switch on="change.risk">
+                <tr ng-repeat="change in changes | skip">
+                  <td class="risk" ng-switch on="change.risk">
                     <div ng-switch-when="low"    ng-click="unset_risk(change._id)" class="change-indicator change-indicator-low"></div>
                     <div ng-switch-when="medium" ng-click="unset_risk(change._id)" class="change-indicator change-indicator-medium"></div>
                     <div ng-switch-when="high"   ng-click="unset_risk(change._id)" class="change-indicator change-indicator-high"></div>
                     <div ng-switch-default ng-click="set_risk(change._id, 'low')" class="change-indicator change-indicator-low"></div>
                     <div ng-switch-default ng-click="set_risk(change._id, 'medium')" class="change-indicator change-indicator-medium"></div>
                     <div ng-switch-default ng-click="set_risk(change._id, 'high')" class="change-indicator change-indicator-high"></div>
-
-                    <div title="{{change._id}}" class="text-truncated">
-                      <a ui-sref='releases.detail.change({changeid: change._id})'>{{change._id | md5short}}</a>
-                    </div>
                   </td>
-                  <td class="code"><pre>{{change.output}}</pre></td>
-                  <td class="transition"><i class="icon-chevron-right"></i></td>
+                  <td class="primary">
+                    <pre>{{change.output}}</pre>
+                  </td>
+                  <td class="transition">
+                    <a ui-sref='releases.detail.change({changeid: change._id})'><i class="fa fa-chevron-right"></i></a>
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -67,3 +67,13 @@ section {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+h1, h2, h3 {
+  line-height: 40px;
+}
+
+.nav, #tabcontrol {
+  margin-left: 0;
+  margin-bottom: 20px;
+  list-style: none;
+}

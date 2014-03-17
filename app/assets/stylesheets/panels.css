@@ -95,7 +95,7 @@ html:not([data-useragent*='MSIE 10.0']) .list-table-wrapper tr:not(.list-contain
     width: 100%;
 }
 .list-table th.risk, .list-table td.risk {
-    width: 8em;
+    width: 5.4em;
 }
 .list-table th.timestamp, .list-table td.timestamp {
     width: 12em;
@@ -359,9 +359,13 @@ h4 {
     white-space: nowrap;
 }
 pre {
-  overflow: auto;
-  word-wrap: normal;
-  white-space: pre;
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+}
+
+.change-detail-code {
+    margin-top: 5;
 }
 .stack-hidden-pane {
     position: absolute;

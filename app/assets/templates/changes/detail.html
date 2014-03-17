@@ -35,21 +35,37 @@
       </table>
     </div>
     <h3>Change output</h3>
-    <div class="code">
+    <div class="change-detail-code code">
       <pre>{{change.output}}</pre>
     </div>
 
-    <h3>Node details</h3>
-    <div class="attribute-table-wrapper">
-      <table class="attribute-table event-details">
-        <tbody>
-          <tr><th scope="row">Property:</th><td>–</td></tr>
-          <tr><th scope="row">Old Value:</th><td>–</td></tr>
-          <tr><th scope="row">New Value:</th><td>–</td></tr>
-          <tr><th scope="row">Message:</th><td>–</td></tr>
-        </tbody>
+    <!-- <h3>Node details</h3> -->
+    <div class="list-table-wrapper">
+      <table class="list-table event-count-list">
+        <thead>
+          <tr>
+            <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Nodes</span></th>
+            <!-- <th scope="col" class="numeric sort-header" data-sort="skips"><span>By Tier</span></th> -->
+            <th scope="col" class="indicator"></th>
+          </tr>
+        </thead>
       </table>
+      <div class="table-container-scroll">
+        <table class="list-table event-count-list" id="nodes-table">
+          <tbody>
+            <tr ng-repeat="node in change.nodes">
+              <td class="primary">
+                <div class="event-indicator event-indicator-failure"></div> <div title="{{node}}" class="text-truncated">{{node}}</div>
+              </td>
+              <td class="transition">
+                <a ui-sref='nodes.detail({node: node})'><i class="fa fa-chevron-right"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
     <!-- <a class="jump-link spawn-link" target="_blank" href="/reports/master/2014-03-16T11:52:36.271Z">View run report</a> -->
   </div>
 </div>

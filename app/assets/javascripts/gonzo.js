@@ -4,7 +4,7 @@ var gonzo = angular.module('gonzo', [
   'ui.bootstrap',
   'ui.router',
   'nvd3ChartDirectives',
-  // 'skipFilter',
+  'skipFilter',
   'timeagoFilter',
   'capitalizeFilter',
   'md5shortFilter',
@@ -95,6 +95,19 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
          },
         'detail@': {
            templateUrl: '/assets/nodes/list.html',
+           controller: 'NodeCtrl'
+         },
+      }
+    })
+    .state("nodes.detail", {
+      url: "/:node",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/nodes/list.html',
+           controller: 'NodeCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/nodes/detail.html',
            controller: 'NodeCtrl'
          },
       }

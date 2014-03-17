@@ -4,6 +4,7 @@ function($scope, $stateParams, changeWrapper, listener) {
   $scope.get = function(id) {
     changeWrapper.get(id).then(function(res) {
       $scope.change = res;
+       if (res.nodes) {console.log(res.nodes);}
     }, function(reason) {
       console.log(reason);
     });
