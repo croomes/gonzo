@@ -1,0 +1,32 @@
+<div class="pane0 stack-pane stack-compact-pane">
+  <div>
+    <h2>
+      <span class="heading-label">Nodes:</span> <span class="event-count">{{ filtered.length }}</span> in filter
+    </h2>
+    <p class="compact-hide"><em>Number of resources affected for each node:</em></p>
+    <div class="list-table-wrapper">
+      <table class="list-table event-list">
+        <thead>
+          <tr>
+            <th scope="col" ng-click="predicate = 'facts.gonzo_tier'; reverse=!reverse" class="event sort-header sort-down" data-sort="status"><span>Tier</span></th>
+            <th scope="col" ng-click="predicate = 'key'; reverse=!reverse" class="primary sort-header" data-sort="certname"><span>Node</span></th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-container-scroll">
+        <table class="list-table event-list" id="resource-events-table">
+          <tbody>
+            <tr ng-repeat="node in filtered = (nodes | orderBy:predicate:reverse)" 
+                ng-class='row_class(node.key)' 
+                ui-sref='nodes.detail({certname: node.key})'>
+              <td class="event">
+                <div class="tier-indicator tier-indicator-{{ node.facts.gonzo_tier }}"></div> 
+                {{ node.facts.gonzo_tier | uppercase }}</td>
+              <td class="primary"><div title="master" class="text-truncated">{{ node.key }}</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

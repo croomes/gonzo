@@ -552,7 +552,8 @@ ul.breadcrumb li {
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 0 7px 1px #999;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;  /* Changed from hidden by simon */
 }
 .stack-full-pane>div {
     padding: 10px;
@@ -722,7 +723,7 @@ h2+.state-summary-transitionable {
     height: 100%;
     overflow-y: scroll;
 }
-.event-indicator, .change-indicator {
+.event-indicator, .change-indicator, .tier-indicator {
     width: 10px;
     height: 1.5em;
     margin: 0 auto;
@@ -737,6 +738,17 @@ h2+.state-summary-transitionable {
     margin-top: 5px;
     margin-right: 5px;
 }
+/*.event-list .tier-indicator {
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+}*/
+
+.event-list .tier-indicator {
+}
+
 .event-indicator-failure {
     background-color: #d93129;
 }
@@ -758,6 +770,43 @@ h2+.state-summary-transitionable {
 }
 .change-indicator-low {
     background-color: #5cb85c;
+}
+
+.tier-indicator-dev {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;  /* left arrow slant */
+    border-right: 7px solid transparent; /* right arrow slant */
+    border-bottom: 14px solid #efa63b;
+    font-size: 0;
+    line-height: 0;
+}
+.tier-indicator-uat {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;  /* left arrow slant */
+    border-right: 7px solid transparent; /* right arrow slant */
+    border-bottom: 14px solid #78b7d2;
+    font-size: 0;
+    line-height: 0;
+}
+.tier-indicator-prod {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;  /* left arrow slant */
+    border-right: 7px solid transparent; /* right arrow slant */
+    border-bottom: 14px solid #d93129;
+    font-size: 0;
+    line-height: 0;
+}
+.tier-indicator- {
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;  /* left arrow slant */
+    border-right: 7px solid transparent; /* right arrow slant */
+    border-bottom: 14px solid #7c6aab;
+    font-size: 0;
+    line-height: 0;
 }
 
 .list-container-selected {

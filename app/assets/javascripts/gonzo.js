@@ -100,15 +100,15 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
       }
     })
     .state("nodes.detail", {
-      url: "/:node",
+      url: "/:certname",
       views: {
         'summary@': {
-           templateUrl: '/assets/nodes/list.html',
-           controller: 'NodeCtrl'
+           templateUrl: '/assets/nodes/summary.html',
+           controller: 'NodeSummaryCtrl'
          },
         'detail@': {
            templateUrl: '/assets/nodes/detail.html',
-           controller: 'NodeCtrl'
+           controller: 'NodeDetailCtrl'
          },
       }
     })
