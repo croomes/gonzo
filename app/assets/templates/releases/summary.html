@@ -1,14 +1,14 @@
 <div class="pane1 stack-pane stack-compact-pane">
   <div>
     <h2>
-    <span class="heading-label">Releases:</span> <span class="event-count">1</span> with <span class="event-type-name">failures</span>
+    <span class="heading-label">Releases:</span> <span class="event-count">{{ releases.length }}</span> <span class="event-type-name">available</span>
     </h2>
     <p class="compact-hide"><em>Number of nodes affected for each class:</em></p>
     <div class="list-table-wrapper">
       <table class="list-table event-count-list">
         <thead>
           <tr>
-            <th scope="col" class="primary sort-header sort-down" data-sort="containing-class"><span>Release</span></th>
+            <th scope="col" ng-click="predicate = 'slug'; reverse=!reverse" class="primary sort-header sort-down" data-sort="containing-class"><span>Release</span></th>
             <th scope="col" class="numeric sort-header" data-sort="failures"><span>Status</span></th>
             <th scope="col" class="numeric sort-header" data-sort="skips"><span>Deployment</span></th>
             <th scope="col" class="indicator"></th>
@@ -18,7 +18,7 @@
       <div class="table-container-scroll">
         <table class="list-table event-count-list" id="classes-table">
           <tbody>
-            <tr ng-repeat="release in releases" class="list-container-selected">
+            <tr ng-repeat="release in releases | orderBy:predicate:reverse" ng-class='row_class(release.slug)' ui-sref='releases.detail({version: release.slug})'>
               <td class="primary">
                 <div class="event-indicator event-indicator-failure"></div> 
                 <div title="{{release.slug}}" class="text-truncated">

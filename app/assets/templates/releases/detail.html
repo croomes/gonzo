@@ -1,3 +1,4 @@
+
 <div class="pane2 stack-pane stack-full-pane">
   <div>
     <h2 title="{{version}}"><span class="heading-label">Release:</span> <span class="class-name">{{version}}</span></h2>
@@ -11,38 +12,85 @@
       <li id="reports-tab-control">
         <a href="#reports-tab" data-toggle="tab" data-url-fragment="reports">Reports</a>
       </li>
+      <li class="dropdown" id="analyse-tab-control">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Analysis <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <div ng-click="analyse()">Run impact analysis</div>
+        </ul>
+      </li>
     </ul>
+
     <div class="tab-content">
 
       <!-- SUMMARY TAB -->
-      <div class="tab-pane active" id="summary-tab"><div><p class="compact-hide">Number of resources affected for each node:</p>
-        <div class="list-table-wrapper">
-          <table class="list-table event-count-list">
-            <thead>
-              <tr>
-                <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
-                <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
-                <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
-                <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
-                <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
-                <th scope="col" class="indicator"></th>
-              </tr>
-            </thead>
-          </table>
-          <div class="table-container-scroll">
-            <table class="list-table event-count-list" id="nodes-table">
-              <tbody>
-                <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="master" class="text-truncated">master</div></td>
-                <td class="numeric"><span>1</span></td>
-                <td class="numeric"><span>1</span></td>
-                <td class="numeric"><span>–</span></td>
-                <td class="numeric"><span>–</span></td>
-                <td class="transition"><i class="icon-chevron-right"></i></td>
-              </tr></tbody>
+      <div class="tab-pane active" id="summary-tab">
+<!--         <div class="analysis-progress">
+          
+        </div> -->
+        <div><p class="compact-hide">Number of nodes deployed, available for deployment, and impacted by this release for each tier:</p>
+          <div class="list-table-wrapper">
+            <table class="list-table event-count-list">
+              <thead>
+                <tr>
+                  <th scope="col" class="primary"><span>Tier</span></th>
+                  <th scope="col" class="numeric" title="Nodes already running this release"><span>Deployed</span></th>
+                  <th scope="col" class="numeric" title="Nodes that can have this release deployed"><span>Available</span></th>
+                  <th scope="col" class="numeric" title="Nodes that have had the impact of this release analysed"><span>Analysed</span></th>
+                  <th scope="col" class="divider"></th>
+                  <th scope="col" class="risk" title="Nodes with unassessed changes"><span>?</span></th>
+                  <th scope="col" class="risk" title="Nodes with only low risk changes"><span>Low</span></th>
+                  <th scope="col" class="risk" title="Nodes with medium risk changes"><span>Med</span></th>
+                  <th scope="col" class="risk" title="Nodes with high risk changes"><span>High</span></th>
+                  <th scope="col" class="indicator"></th>
+                </tr>
+              </thead>
             </table>
+            <div class="table-container-scroll">
+              <table class="list-table event-count-list" id="nodes-table">
+                <tbody>
+                  <tr ng-repeat="tier in ['dev', 'uat', 'prod']">
+                    <td class="primary">
+                      <div class="tier-indicator tier-indicator-{{ tier }}"></div>
+                      <div title="{{ tier | uppercase }}" class="text-truncated">{{ tier | uppercase }}</div>
+                    </td>
+                    <td class="numeric">
+                      <span>10</span>
+                    </td>
+                    <td class="numeric">
+                      <span>90</span>
+                    </td>
+                    <td class="numeric">
+                      <span>15</span>
+                    </td>
+                    <td class="divider"></td>
+                    <td class="risk">
+                      <div title="Nodes with unassessed changes" class="change-indicator change-indicator-unassessed"></div>
+                      <span>{{ tierriskdata[tier].unassessed.length || '-'}}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with only low risk changes" class="change-indicator change-indicator-low"></div>
+                      <span>{{ tierriskdata[tier].low.length || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with medium risk changes" class="change-indicator change-indicator-medium"></div>
+                      <span>{{ tierriskdata[tier].medium.length || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with high risk changes" class="change-indicator change-indicator-high"></div>
+                      <span>{{ tierriskdata[tier].high.length || '-' }}</span>
+                    </td>
+                    <td class="transition">
+                      <a ui-sref='releases.detail.tier({version: version, tier: tier})'><i class="fa fa-chevron-right"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div></div>
+      </div>
 
       <!-- CHANGES TAB -->
       <div class="tab-pane" id="changes-tab"><div><p class="compact-hide">Changes to be implemented across all nodes:</p>
@@ -117,6 +165,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>

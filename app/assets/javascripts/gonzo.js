@@ -37,12 +37,6 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     })
     .state("releases", {
       url: "/releases",
-      // onEnter: function() {
-      //   console.log("releases onEnter");
-      // },
-      // onExit: function() {
-      //   console.log("releases onExit");
-      // },
       views: {
         'summary@': {
            templateUrl: '/assets/toc.html',
@@ -56,12 +50,6 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     })
     .state("releases.detail", {
       url: "/:version",
-      // onEnter: function() {
-      //   console.log("releases.detail onEnter");
-      // },
-      // onExit: function() {
-      //   console.log("releases.detail onExit");
-      // },
       views: {
         'summary@': {
            templateUrl: '/assets/releases/summary.html',
@@ -82,6 +70,19 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
          },
         'detail@': {
            templateUrl: '/assets/changes/detail.html',
+           controller: 'ChangeDetailCtrl'
+         },
+      }
+    })
+    .state("releases.detail.tier", {
+      url: "/tier/:tier",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/tiers/summary.html',
+           controller: 'ChangeSummaryCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/tiers/detail.html',
            controller: 'ChangeDetailCtrl'
          },
       }

@@ -140,7 +140,7 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
     Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.hosts = {};
 
-      ['dev', 'uat', 'prod'].forEach(function(cur_tier) {
+      ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.hostriskdata[cur_tier] = [];
 
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
@@ -233,6 +233,56 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
     return results;
   }
 
+  // $scope.getTierRisk = function(tier) {
+  //   if ($scope.hostriskdata && tier) {
+  //     $scope.hostriskdata.forEach(function(entry) {
+  //       if ($entry.key === tier) {
+  //         return $entry.value;
+  //       }
+  //     })
+  //   }
+  // }
+
+  $scope.getTierRiskData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+      $scope.tierhosts = {};
+
+      ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
+        $scope.tierriskdata[cur_tier] = {};
+
+        ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
+          res.rows.forEach(function(row) {
+            if (row['key'] == cur_risk) {
+              Object.keys(row['value']).forEach(function(host, value) {
+
+                // TODO: issues with some hostnames - need to enforce FQDNs everywhere
+                nodeWrapper.get_tier(host).then(function(host_tier) {
+                  if (host_tier == cur_tier) {
+                    if (! $scope.tierriskdata[cur_tier][cur_risk]) {
+                      $scope.tierriskdata[cur_tier][cur_risk] = [];
+                    }
+
+                    // Only store the highest-rated risk for each server,
+                    // keeping track in tierhosts
+                    if (! $scope.tierhosts[host]) {
+                      $scope.tierriskdata[cur_tier][cur_risk].push(host);
+                      $scope.tierhosts[host] = {'tier': cur_tier, 'risk': cur_risk};
+                    }
+                  }
+                }, function(reason) {
+                  console.log(reason);
+                });
+
+              });
+            }
+          });
+        });
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
   $scope.getNodeCount = function() {
     if (! $scope.nodecount) {
       nodeWrapper.nodecount().then(function(res) {
@@ -289,9 +339,11 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   $scope.tiernodes = {};
   $scope.deployment = {};
   $scope.hostriskdata = {};
+  $scope.tierriskdata = {};
   $scope.getRiskData();
   $scope.getDeploymentData();
   $scope.getHostRiskData();
+  $scope.getTierRiskData();
   $scope.getNodeTierData();
   $scope.getNodeCount();
 
