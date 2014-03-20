@@ -235,7 +235,8 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
 
   $scope.getTierRiskData = function() {
     Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
-      $scope.tierhosts = {};
+      $scope.tierhosts = $scope.tierhosts || {};
+      $scope.tierriskdata = $scope.tierriskdata || {};
 
       ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.tierriskdata[cur_tier] = {};
@@ -317,7 +318,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   $scope.tiernodes = {};
   $scope.deployment = {};
   $scope.hostriskdata = {};
-  $scope.tierriskdata = {};
   $scope.getRiskData();
   $scope.getDeploymentData();
   $scope.getHostRiskData();
