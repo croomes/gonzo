@@ -304,9 +304,7 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   }
 
   $scope.getResultMax = function() {
-    console.log("getResultMax results:");
-    console.log($scope.results);
-    return $scope.results.length;
+    return $scope.reports.length;
   }
 
   $scope.getVersion = function() {
@@ -393,10 +391,10 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   $scope.$on('newResult', function(event, result) {
     if (result.collection == "report") {
       // console.log("new result: " + result._id);
-      if (! $scope.results) {
-        $scope.results = [];
+      if (! $scope.reports) {
+        $scope.reports = [];
       }
-      $scope.results.push(result);
+      $scope.reports.push(result);
     }
   });
 
@@ -415,10 +413,10 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
 
   $scope.$on('delResult', function(event, id) {
     // console.log("del result: " + id);
-    if ($scope.results) {
-      for (var i = 0; i<$scope.results.length; i++) {
-        if ($scope.results[i]._id === id) {
-          $scope.results.splice(i,1);
+    if ($scope.reports) {
+      for (var i = 0; i<$scope.reports.length; i++) {
+        if ($scope.reports[i]._id === id) {
+          $scope.reports.splice(i,1);
         }
       }
     }
