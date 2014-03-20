@@ -233,16 +233,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
     return results;
   }
 
-  // $scope.getTierRisk = function(tier) {
-  //   if ($scope.hostriskdata && tier) {
-  //     $scope.hostriskdata.forEach(function(entry) {
-  //       if ($entry.key === tier) {
-  //         return $entry.value;
-  //       }
-  //     })
-  //   }
-  // }
-
   $scope.getTierRiskData = function() {
     Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.tierhosts = {};
@@ -262,12 +252,21 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
                       $scope.tierriskdata[cur_tier][cur_risk] = [];
                     }
 
-                    // Only store the highest-rated risk for each server,
+                    // Store the highest-rated change,
                     // keeping track in tierhosts
                     if (! $scope.tierhosts[host]) {
                       $scope.tierriskdata[cur_tier][cur_risk].push(host);
                       $scope.tierhosts[host] = {'tier': cur_tier, 'risk': cur_risk};
                     }
+
+                    // And the count of every change
+                    if ($scope.tierhosts[host][cur_risk]) {
+                      $scope.tierhosts[host][cur_risk]++;
+                    }
+                    else {
+                      $scope.tierhosts[host][cur_risk] = 1;
+                    }
+
                   }
                 }, function(reason) {
                   console.log(reason);
@@ -314,25 +313,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
 
   // Set data from params
   $scope.version = $scope.getVersion();
-  // if ($stateParams.changeid) {
-  //   console.log("Loading change");
-  //   $scope.get($stateParams.changeid);
-  // }
-
-  // Load additional data
-  // if (! $scope.results) {
-  //   $scope.results = [];
-  // }
-  // $scope.changes = ['abc', '123'];
-  // if (! $scope.changes) {
-  //   changeWrapper.get_changes().then(function(res) {
-  //     console.log("LOADED CHANGES:");
-  //     console.log(res.rows);
-  //     $scope.changes = res.rows;
-  //   }, function(reason) {
-  //     console.log(reason);
-  //   });
-  // }
 
   $scope.tiernodes = {};
   $scope.deployment = {};
@@ -345,52 +325,10 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   $scope.getNodeTierData();
   $scope.getNodeCount();
 
-  // console.log("change=");
-  // console.log($scope.change);
 
-  // console.log("changes=");
-  // console.log($scope.changes);
-
-  // console.log("results=");
-  // console.log($scope.results);
-
-  // Summary progressbar
-  // $interval(function() {
-  //   // $scope.result_value = $scope.getResultMax();
-  //   // $scope.result_max = $scope.getResultMax();
-  //   // $scope.getRiskData();
-  //   // $scope.risk_max = $scope.getRiskMax();
-  //   // console.log("change:");
-  //   // console.log($scope.change);
-
-  //   console.log("changes:");
-  //   console.log($scope.changes);
-
-  //   console.log("results:");
-  //   console.log($scope.results);
-  // },10000);
-
-  var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
-  $scope.colorFunction = function() {
-    return function(d, i) {
-      return colorArray[i];
-    };
-  }
-  $scope.xFunction = function() {
-    return function(d){
-        return d.key;
-    };
-  };
-
-  $scope.yFunction = function() {
-    return function(d){
-      return d.value;
-    };
-  };
-
+  // Listen for changes
   $scope.$on('newResult', function(event, result) {
     if (result.collection == "report") {
-      // console.log("new result: " + result._id);
       if (! $scope.reports) {
         $scope.reports = [];
       }
@@ -400,10 +338,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
 
   $scope.$on('newChange', function(event, result) {
     if (result.collection == "change") {
-      // console.log("new change: " + result._id);
-      // console.log($scope);
-      // console.log("new change data:");
-      // console.log(result);
       if (! $scope.changes) {
         $scope.changes = [];
       }
@@ -412,7 +346,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   });
 
   $scope.$on('delResult', function(event, id) {
-    // console.log("del result: " + id);
     if ($scope.reports) {
       for (var i = 0; i<$scope.reports.length; i++) {
         if ($scope.reports[i]._id === id) {
@@ -423,7 +356,6 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
   });
 
   $scope.$on('delChange', function(event, id) {
-    // console.log("del change: " + id);
     if ($scope.changes) {
       for (var i = 0; i<$scope.changes.length; i++) {
         if ($scope.changes[i]._id === id) {
