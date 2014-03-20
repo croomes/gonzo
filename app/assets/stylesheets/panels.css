@@ -701,6 +701,79 @@ h2+.state-summary-transitionable {
     width: 14%;
     text-align: right;
 }
+
+#release-summary {
+    border-radius: 0;
+    box-shadow: 0 0 0 transparent;
+}
+#release-summary>div {
+    margin-bottom: 28px;
+}
+#release-summary h2 {
+    margin-bottom: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+#release-summary h2::selection {
+    background: transparent;
+}
+.release-summary-graph-text {
+    float: left;
+    width: 38%}
+.release-summary-graph>div {
+    height: 100%}
+.release-summary-graph-failure {
+    background-color: #d93129;
+}
+.release-summary-graph-change {
+    background-color: #78b7d2;
+}
+.release-summary-graph-skip {
+    background-color: #7c6aab;
+}
+.release-summary-graph-noop {
+    background-color: #efa63b;
+}
+.release-summary-transitionable {
+    padding: 2px 8px 2px 6px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-width: 0 0 1px;
+}
+h2+.release-summary-transitionable {
+    border-top-width: 1px;
+}
+.release-summary-transitionable:last-child {
+    padding-top: 2px;
+    border-width: 0;
+    text-align: right;
+}
+.release-summary-transitionable a {
+    color: #555;
+}
+.release-summary-transitionable a:hover, .release-summary-transitionable a:active, .release-summary-transitionable a:focus {
+    outline: 0;
+    text-decoration: none;
+}
+.release-summary-transitionable i {
+    padding-left: 4px;
+    vertical-align: middle;
+}
+.release-summary-selected {
+    background-color: #c0eafd;
+}
+.release-summary-graph {
+    float: right;
+    width: 43%;
+    margin: 4px 0;
+    height: 11px;
+    background-color: #e6e6e6;
+}
+.release-summary-graph-count {
+    float: left;
+    width: 14%;
+    text-align: right;
+}
 .event-count-breakdown-wrapper {
     position: relative;
     padding-bottom: 5px;

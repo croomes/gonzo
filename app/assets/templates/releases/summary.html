@@ -1,40 +1,24 @@
 <div class="pane1 stack-pane stack-compact-pane">
+
   <div>
-    <h2>
-    <span class="heading-label">Releases:</span> <span class="event-count">{{ releases.length }}</span> <span class="event-type-name">available</span>
-    </h2>
-    <p class="compact-hide"><em>Number of nodes affected for each class:</em></p>
-    <div class="list-table-wrapper">
-      <table class="list-table event-count-list">
-        <thead>
-          <tr>
-            <th scope="col" ng-click="predicate = 'slug'; reverse=!reverse" class="primary sort-header sort-down" data-sort="containing-class"><span>Release</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="failures"><span>Status</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="skips"><span>Deployment</span></th>
-            <th scope="col" class="indicator"></th>
-          </tr>
-        </thead>
-      </table>
-      <div class="table-container-scroll">
-        <table class="list-table event-count-list" id="classes-table">
-          <tbody>
-            <tr ng-repeat="release in releases | orderBy:predicate:reverse" ng-class='row_class(release.slug)' ui-sref='releases.detail({version: release.slug})'>
-              <td class="primary">
-                <div class="event-indicator event-indicator-failure"></div> 
-                <div title="{{release.slug}}" class="text-truncated">
-                  <a ui-sref='releases.detail({version: release.slug})'>{{release.slug}}</a>
-                </div>
-              </td>
-              <td class="string"><span>{{release.status}}</span></td>
-              <td>
-                <span class="badge alert-success">{{deployment[release.slug]['dev']}}</span>
-                <span class="badge alert-warning">{{deployment[release.slug]['uat']}}</span>
-                <span class="badge alert-danger">{{deployment[release.slug]['prod']}}</span>
-              </td>
-              <td class="transition"><i class="icon-chevron-right"></i></td>
-            </tr>
-          </tbody>
-        </table>
+    <div id="release-summary">
+      <div id="release-summary-deployment">
+
+        <h2>
+          <span class="heading-label">Releases:</span> <span class="event-count">{{ releases.length }}</span> <span class="event-type-name">available</span>
+        </h2>
+
+        <div ng-repeat="release in releases | orderBy:predicate:reverse" ng-class='row_class(release.slug)' ui-sref='releases.detail({version: release.slug})' id="release-summary-classes-failures" class="release-summary-transitionable" data-transition-to="failures">
+          <div class="release-summary-graph-text">{{ release.slug }}</div>
+          <div class="release-summary-graph-count">{{ deployment[release.slug].total || '-' }}</div>
+          <progress max="getReleaseMaxNodes(release.slug)" dynamic-max="true" class="release-summary-graph">
+            <bar ng-repeat="tier in ['dev', 'uat', 'prod']" value="deployment[release.slug][tier]" type="{{ tier }}"></bar>
+          </progress>
+          <div class="clearfix"></div>
+        </div>
+        <div id="state-summary-classes-all" class="state-summary-transitionable" data-transition-to="all">
+          <a ui-sref="releases">All Releases <i class="fa fa-chevron-right"></i></a>
+        </div>
       </div>
     </div>
   </div>
