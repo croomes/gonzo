@@ -1,0 +1,24 @@
+<h2>
+  <span class="heading-label">Nodes:</span> <span class="event-count">{{ getTierMax() }}</span> <span class="event-type-name">nodes available</span>
+</h2>
+
+<div ng-repeat="(tier, tiercount) in tiers | orderBy:predicate:reverse" 
+     ng-class='row_class(tier)' 
+     ui-sref='tier.detail({tier: tier})' 
+     id="release-summary-classes-failures" 
+     class="release-summary-transitionable" 
+
+     data-transition-to="failures">
+  <div class="release-summary-graph-text">
+    <div class="tier-indicator tier-indicator-{{ tier | lowercase }}"></div>
+    {{ tier | uppercase }}
+  </div>
+  <div class="release-summary-graph-count">{{ tiercount || '-' }}</div>
+  <progress max="getTierMax()" dynamic-max="true" class="release-summary-graph">
+    <bar value="tiercount" type="{{ tier }}" title="{{ tiercount }} nodes are in the {{tier | uppercase }} tier"></bar>
+  </progress>
+  <div class="clearfix"></div>
+</div>
+<div id="state-summary-classes-all" class="state-summary-transitionable" data-transition-to="all">
+  <a ui-sref="nodes">All Nodes <i class="fa fa-chevron-right"></i></a>
+</div>

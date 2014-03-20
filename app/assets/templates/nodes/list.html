@@ -8,11 +8,11 @@
       <table class="list-table event-count-list">
         <thead>
           <tr>
-            <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="failures"><span>Tier</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="skips"><span>Resources</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="successes"><span>OS</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="noops"><span>Last Seen</span></th>
+            <th scope="col" ng-click="predicate = 'key'; reverse=!reverse" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
+            <th scope="col" ng-click="predicate = 'facts.gonzo_tier'; reverse=!reverse" class="string sort-header" data-sort="failures"><span>Tier</span></th>
+            <th scope="col" ng-click="predicate = 'facts.gonzo_release'; reverse=!reverse" class="string sort-header" data-sort="skips"><span>Release</span></th>
+            <th scope="col" ng-click="predicate = 'facts.operatingsystem'; reverse=!reverse" class="string sort-header" data-sort="successes"><span>OS</span></th>
+            <th scope="col" ng-click="predicate = 'lastseen'; reverse=!reverse"  class="timestamp sort-header" data-sort="noops"><span>Last Seen</span></th>
             <th scope="col" class="indicator"></th>
           </tr>
         </thead>
@@ -20,14 +20,16 @@
       <div class="table-container-scroll">
         <table class="list-table event-count-list" id="nodes-table">
           <tbody>
-            <tr ng-repeat="node in nodes">
+            <tr ng-repeat="node in filtered = (nodes | orderBy:predicate:reverse)" 
+                ng-class='row_class(node.key)' 
+                ui-sref='nodes.detail({certname: node.key})'>
               <td class="primary">
                 <div class="tier-indicator tier-indicator-{{ node.facts.gonzo_tier }}"></div>
                 <div title="{{node.key}}" class="text-truncated" ui-sref='nodes.detail({certname: node.key})'>{{ node.key }}</div>
               </td>
               <td class="string"><span>{{ node.facts.gonzo_tier | uppercase }}</span></td>
-              <td><class="numeric"><span>{{ node.classes.length }}</span></td>
-              <td class="event"><span>{{ node.facts.operatingsystem }}</span></td>
+              <td class="string"><span>{{ node.facts.gonzo_release || '-' }}</span></td>
+              <td class="string"><span>{{ node.facts.operatingsystem }}</span></td>
               <td class="timestamp"><span>{{ node.lastseen * 1000 | date:'HH:mm:ss' }}</span></td>
               <td class="transition">
                 <a ui-sref='nodes.detail({certname: node.key})'><i class="fa fa-chevron-right"></i></a>

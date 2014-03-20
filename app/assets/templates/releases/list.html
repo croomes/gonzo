@@ -1,16 +1,17 @@
 <div class="pane1 stack-pane stack-full-pane">
   <div>
     <h2>
-      <span class="heading-label">Releases:</span> <span class="event-count">1</span> with <span class="event-type-name">failures</span>
+      <span class="heading-label">Releases:</span> <span class="event-count">{{ releases.length }}</span> <span class="event-type-name">available</span>
     </h2>
-    <p class="compact-hide"><em>Number of resources affected for each node:</em></p>
+    <p class="compact-hide"><em>Number of nodes deployed for each release:</em></p>
     <div class="list-table-wrapper">
       <table class="list-table event-count-list">
         <thead>
           <tr>
             <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Release</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="failures"><span>Status</span></th>
-            <th scope="col" class="numeric sort-header" data-sort="skips"><span>By Tier</span></th>
+            <th scope="col" class="numeric sort-header" data-sort="dev"><span>DEV</span></th>
+            <th scope="col" class="numeric sort-header" data-sort="uat"><span>UAT</span></th>
+            <th scope="col" class="numeric sort-header" data-sort="prod"><span>PROD</span></th>
             <th scope="col" class="indicator"></th>
           </tr>
         </thead>
@@ -20,14 +21,12 @@
           <tbody>
             <tr ng-repeat="release in releases">
               <td class="primary">
-                <div class="event-indicator event-indicator-failure"></div> <div title="{{release.slug}}" class="text-truncated">{{release.slug}}</div>
+                <div class="release-indicator release-indicator-{{ release.status | lowercase }}"></div> <div title="{{release.slug}}" class="text-truncated">{{release.slug}}</div>
               </td>
-              <td class="string"><span>{{release.status}}</span></td>
-              <td>
-                <span class="badge alert-success">{{deployment[release.slug]['dev']}}</span>
-                <span class="badge alert-warning">{{deployment[release.slug]['uat']}}</span>
-                <span class="badge alert-danger">{{deployment[release.slug]['prod']}}</span>
-              </td>
+              <!-- <td class="string"><span>{{release.status}}</span></td> -->
+              <td class="numeric">{{ deployment[release.slug]['dev'] || '-' }}</td>
+              <td class="numeric">{{ deployment[release.slug]['uat'] || '-' }}</td>
+              <td class="numeric">{{ deployment[release.slug]['prod'] || '-' }}</td>
               <td class="transition">
                 <a ui-sref='releases.detail({version: release.slug})'><i class="fa fa-chevron-right"></i></a>
               </td>

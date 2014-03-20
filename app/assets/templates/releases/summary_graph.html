@@ -1,0 +1,27 @@
+<h2>
+  <span class="heading-label">Releases:</span> <span class="event-count">{{ releases.length }}</span> <span class="event-type-name">releases available</span>
+</h2>
+
+<div ng-repeat="release in releases | orderBy:predicate:reverse" 
+     ng-class='row_class(release.slug)' 
+     ui-sref='releases.detail({version: release.slug})' 
+     id="release-summary-classes-failures" 
+     class="release-summary-transitionable" 
+     data-transition-to="failures">
+  <div class="release-summary-graph-text">
+    <div class="release-indicator release-indicator-{{ release.status | lowercase }}"></div>
+    {{ release.slug }}
+  </div>
+  <div class="release-summary-graph-count">{{ deployment[release.slug].total || '-' }}</div>
+  <progress max="getReleaseMaxNodes(release.slug)" dynamic-max="true" class="release-summary-graph">
+    <bar ng-repeat="tier in ['dev', 'uat', 'prod']" 
+         value="deployment[release.slug][tier]" 
+         type="{{ tier }}" 
+         title="{{ deployment[release.slug][tier] }} {{ tier | uppercase }} nodes have release {{ release.slug }} deployed">
+    </bar>
+  </progress>
+  <div class="clearfix"></div>
+</div>
+<div id="state-summary-classes-all" class="state-summary-transitionable" data-transition-to="all">
+  <a ui-sref="releases">All Releases <i class="fa fa-chevron-right"></i></a>
+</div>

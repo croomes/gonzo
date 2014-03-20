@@ -806,7 +806,7 @@ h2+.release-summary-transitionable {
     height: 100%;
     overflow-y: scroll;
 }
-.event-indicator, .change-indicator, .tier-indicator {
+.event-indicator, .change-indicator, .tier-indicator, .release-indicator {
     width: 10px;
     height: 1.5em;
     margin: 0 auto;
@@ -856,6 +856,16 @@ h2+.release-summary-transitionable {
 }
 .change-indicator-unassessed {
     background-color: #404040;
+}
+
+.release-indicator-unavailable {
+    background-color: #d93129;
+}
+.release-indicator-pending {
+    background-color: #78b7d2;
+}
+.release-indicator-available {
+    background-color: #5cb85c;
 }
 
 .tier-indicator-dev {

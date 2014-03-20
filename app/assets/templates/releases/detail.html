@@ -14,10 +14,11 @@
       </li>
       <li class="dropdown" id="analyse-tab-control">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          Analysis <span class="caret"></span>
+          Actions <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-          <div ng-click="analyse()">Run impact analysis</div>
+          <li ng-click="analyse()">Run impact analysis</li>
+          <li ng-click="setReleaseStatus('unavailable')">Mark release unavailable</li>
         </ul>
       </li>
     </ul>
@@ -27,7 +28,7 @@
       <!-- SUMMARY TAB -->
       <div class="tab-pane active" id="summary-tab">
 <!--         <div class="analysis-progress">
-          
+
         </div> -->
         <div><p class="compact-hide">Number of nodes deployed, available for deployment, and impacted by this release for each tier:</p>
           <div class="list-table-wrapper">
@@ -136,7 +137,7 @@
             <table class="list-table report-count-list">
               <thead>
                 <tr>
-                  <th scope="col" class="reportid sort-header sort-down" data-sort="resource"><span>Node</span></th>
+                  <th scope="col" class="primary sort-header sort-down" data-sort="resource"><span>Node</span></th>
                   <th scope="col" class="numeric sort-header" data-sort="high"><span>High</span></th>
                   <th scope="col" class="numeric sort-header" data-sort="medium"><span>Medium</span></th>
                   <th scope="col" class="numeric sort-header" data-sort="low"><span>Low</span></th>
@@ -148,15 +149,15 @@
             <div class="table-container-scroll">
               <table class="list-table report-count-list" id="reports-table">
                 <tbody>
-                  <tr ng-repeat="result in results">
-                    <td class="reportid"><div class="event-indicator event-indicator-failure"></div> <div title="{{result._id}}" class="text-truncated">{{result._id}}</div></td>
-                    <td class="numeric"><span>{{result.msgtime && result.msgtime * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</span></td>
-                    <td class="string"><span>{{result.body.statusmsg && result.body.statusmsg || 'CHANGE' }}</span></td>
-                    <td class="string">
+                  <tr ng-repeat="report in results">
+                    <td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="{{report._id}}" class="text-truncated">{{report._id}}</div></td>
+                    <!-- <td class="numeric"><span>{{report.msgtime && report.msgtime * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</span></td> -->
+                    <td class="numeric"><span>{{report.body.statusmsg && report.body.statusmsg || 'CHANGE' }}</span></td>
+<!--                     <td class="string">
                       <span ng-repeat="change in result.changes">
                           <pre>{{change | md5short}}</pre>
                       </span>
-                    </td>
+                    </td> -->
                     <td class="transition"><i class="icon-chevron-right"></i></td>
                   </tr>
                 </tbody>
