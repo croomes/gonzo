@@ -21,9 +21,8 @@
           <tbody>
             <tr ng-repeat="release in releases">
               <td class="primary">
-                <div class="release-indicator release-indicator-{{ release.status | lowercase }}"></div> <div title="{{release.slug}}" class="text-truncated">{{release.slug}}</div>
+                <div title="{{ release.status | capitalize }}" class="release-indicator release-indicator-{{ release.status | lowercase }}"></div> <div title="{{release.slug}}" class="text-truncated">{{release.slug}}</div>
               </td>
-              <!-- <td class="string"><span>{{release.status}}</span></td> -->
               <td class="numeric">{{ deployment[release.slug]['dev'] || '-' }}</td>
               <td class="numeric">{{ deployment[release.slug]['uat'] || '-' }}</td>
               <td class="numeric">{{ deployment[release.slug]['prod'] || '-' }}</td>
