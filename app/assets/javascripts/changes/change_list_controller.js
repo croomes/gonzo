@@ -1,13 +1,7 @@
 gonzo.controller('ChangeListCtrl', ['$scope', '$stateParams', '$interval', '$modal', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
 function($scope, $stateParams, $interval, $modal, Restangular, listener, changeWrapper, nodeWrapper) {
-  // console.log("Loading ChangeListCtrl");
-  // console.log($stateParams);
-  // console.log("scope.results:");
-  // console.log($scope.results);
-  // console.log("ChangeListCtrl SCOPE:");
-  // console.log($scope);
 
-  // console.log($scope.params);
+  // Trigger mcollective noop run from the UI
   $scope.analyse = function() {
 
     var modalInstance = $modal.open({
@@ -28,11 +22,35 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
   };
 
+  // Main data-loader.  Triggered whenver version changes
+  $scope.change_version = function(version) {
+    changeWrapper.reset(version);
+    changeWrapper.get_changes().then(function(res) {
+      $scope.changes = res;
+    }, function(reason) {
+      console.log(reason);
+    });
+    changeWrapper.get_reports().then(function(res) {
+      $scope.reports = res;
+      $scope.update_stats();
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  // Wrapper to call methods that need re-running when the version
+  // changes
+  $scope.update_stats = function() {
+    console.log("update_stats")
+    $scope.getRiskData();
+    $scope.getHostRiskData();
+    $scope.getTierRiskData();
+  }
+
   // Uses bulk get/save to remove nodes from "change" documents.
   // Keeps the changes in place so we don't lose metadata, just
   // the association to nodes, and removing the node reports.
   $scope.reset = function() {
-
     changeWrapper.alldocs().then(function(docs) {
       reset_changes = [];
       docs.rows.forEach(function(entry) {
@@ -78,29 +96,29 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
   };
 
-  $scope.submit = function() {
-    changeWrapper.add($scope.text).then(function(res) {
-      $scope.text = '';
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
+  // $scope.submit = function() {
+  //   changeWrapper.add($scope.text).then(function(res) {
+  //     $scope.text = '';
+  //   }, function(reason) {
+  //     console.log(reason);
+  //   });
+  // };
 
-  $scope.remove = function(id) {
-    changeWrapper.remove(id).then(function(res) {
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
+  // $scope.remove = function(id) {
+  //   changeWrapper.remove(id).then(function(res) {
+  //   }, function(reason) {
+  //     console.log(reason);
+  //   });
+  // };
 
-  $scope.query = function() {
-    console.log("XXXXX Query")
-    changeWrapper.query($scope.changes).then(function(res) {
-      $scope.changes = '';
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
+  // $scope.query = function() {
+  //   console.log("XXXXX Query")
+  //   changeWrapper.query($scope.changes).then(function(res) {
+  //     $scope.changes = '';
+  //   }, function(reason) {
+  //     console.log(reason);
+  //   });
+  // };
 
   // $scope.get = function(id) {
   //   changeWrapper.get(id).then(function(res) {
@@ -164,7 +182,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
-            if (row['key'] == cur_risk) {
+            if (row['key'] == cur_risk && row['value']) {
               Object.keys(row['value']).forEach(function(host, value) {
                 if (! $scope.hosts[host]) {
                   // TODO: remove hardcoding - need to enforce FQDNs everywhere
@@ -262,7 +280,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
-            if (row['key'] == cur_risk) {
+            if (row['key'] == cur_risk && row['value']) {
               Object.keys(row['value']).forEach(function(host, value) {
 
                 // TODO: issues with some hostnames - need to enforce FQDNs everywhere
@@ -339,11 +357,20 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   $scope.hostriskdata = {};
   $scope.getRiskData();
   $scope.getDeploymentData();
-  $scope.getHostRiskData();
-  $scope.getTierRiskData();
+  // $scope.getHostRiskData();
+  // $scope.getTierRiskData();
   $scope.getNodeTierData();
   $scope.getNodeCount();
 
+  // TODO: Shouldn't need to do this...
+  $scope.$watch('version', function(version) {
+    console.log("version changed!!  reloading data");
+    $scope.change_version(version);
+  });
+
+  $scope.$watch('changes'), function(changes) {
+    $scope.update_stats();
+  }
 
   // Listen for changes
   $scope.$on('newResult', function(event, result) {

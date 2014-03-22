@@ -49,6 +49,12 @@ gonzo.factory('listener', ['$rootScope', 'changedb', function($rootScope, change
 gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changedb', function($q, $rootScope, changedb) {
 
   return {
+    reset: function(version) {
+      changedb = new PouchDB(version);
+      console.log("reset change factory to version: " + version);
+      PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});
+      PouchDB.replicate(version, 'http://127.0.0.1:5984/' + version, {continuous: true});
+    },
     query: function(text) {
       var deferred = $q.defer();
       var doc = {
@@ -99,6 +105,31 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changedb', function($q, $ro
               }
             })
             deferred.resolve(changes);
+          }
+        });
+      });
+      return deferred.promise;
+    },
+    get_reports: function(text) {
+      var deferred = $q.defer();
+      changedb.query({map:
+        function(doc) {
+          if ("report" == doc.collection) {
+            emit([doc._id, 0], doc);
+          }
+        }
+      }, {reduce: false}, function(err, res) {
+        $rootScope.$apply(function() {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            reports = [];
+            res.rows.forEach(function(element, index) {
+              if (element.value) {
+                reports.push(element.value);
+              }
+            })
+            deferred.resolve(reports);
           }
         });
       });
