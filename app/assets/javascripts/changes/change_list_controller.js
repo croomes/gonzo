@@ -141,9 +141,17 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
   };
 
+  // Used by release detail template
   $scope.getDeployedCount = function(version, tier) {
     if ($scope.deployment[version] && $scope.deployment[version][tier]) {
       return $scope.deployment[version][tier];
+    }
+    else if ($scope.deployment[version]) {
+      total = 0;
+      for (var tier in $scope.deployment[version]) {
+        total += $scope.deployment[version][tier];
+      }
+      return total;
     }
   };
 

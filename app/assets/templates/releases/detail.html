@@ -28,9 +28,6 @@
 
       <!-- SUMMARY TAB -->
       <div class="tab-pane active" id="summary-tab">
-<!--         <div class="analysis-progress">
-
-        </div> -->
         <div><p class="compact-hide">Number of nodes deployed, available for deployment, and impacted by this release for each tier:</p>
           <div class="list-table-wrapper">
             <table class="list-table event-count-list">
@@ -58,13 +55,13 @@
                       <div title="{{ tier | uppercase }}" class="text-truncated">{{ tier | uppercase }}</div>
                     </td>
                     <td class="numeric">
-                      <span>10</span>
+                      <span>{{ getDeployedCount(version) || '-' }}</span>
                     </td>
                     <td class="numeric">
-                      <span>90</span>
+                      <span>{{ nodecount.total || '-' }}</span>
                     </td>
                     <td class="numeric">
-                      <span>15</span>
+                      <span>{{ reports.length || '-' }}</span>
                     </td>
                     <td class="divider"></td>
                     <td class="risk">

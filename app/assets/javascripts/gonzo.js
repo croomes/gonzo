@@ -62,7 +62,7 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
       }
     })
     .state("releases.detail.change", {
-      url: "/change/:changeid",
+      url: "/changes/:changeid",
       views: {
         'summary@': {
            templateUrl: '/assets/changes/summary.html',

@@ -10,6 +10,7 @@ Gonzo::Application.routes.draw do
     member do
       get 'check'
       get 'summary'
+      resources :changes, only: :show
     end
   end
   resources :products do
