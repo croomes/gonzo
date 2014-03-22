@@ -1,0 +1,12 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Running impact analysis</h4>
+  </div>
+  <div class="modal-body">
+    <progressbar max="result_max" value="result_value" dynamic-max="true">{{result_value}} / {{result_max}}</progressbar>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
+  </div>
+</div>

@@ -1,5 +1,5 @@
-gonzo.controller('ChangeListCtrl', ['$scope', '$stateParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
-function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
+gonzo.controller('ChangeListCtrl', ['$scope', '$stateParams', '$interval', '$modal', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
+function($scope, $stateParams, $interval, $modal, Restangular, listener, changeWrapper, nodeWrapper) {
   // console.log("Loading ChangeListCtrl");
   // console.log($stateParams);
   // console.log("scope.results:");
@@ -9,6 +9,17 @@ function($scope, $stateParams, $interval, Restangular, listener, changeWrapper, 
 
   // console.log($scope.params);
   $scope.analyse = function() {
+
+    var modalInstance = $modal.open({
+      templateUrl: '/assets/releases/progress.html',
+      controller: 'ReleaseProgressCtrl',
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
     Restangular.oneUrl('nodes', "/releases/" + $stateParams.version + "/check.json").get().then(function(res) {
       console.log("analyse");
       console.log(res);
