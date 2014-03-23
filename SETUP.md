@@ -17,6 +17,7 @@ and get replies from all nodes.
 
 Working notes - no guarantees...
 
+Prepare:
 ```
 $ mkdir /Vagrant/projects/gonzo
 $ cd /Vagrant/projects/gonzo
@@ -26,18 +27,23 @@ $ vagrant oscar init-vms \
 > --agent agent1=centos-64-x64-vbox4210-nocm \
 > --agent agent2=centos-59-x64-vbox4210-nocm \
 > --agent agent3=ubuntu-server-10044-x64-vbox4210-nocm
-$ git clone https://github.com/croomes/puppet-gonzo-demo.git
+$ git clone --recursive https://github.com/croomes/puppet-gonzo-demo.git
+```
+
+Edit `puppet-gonzo-demo/hieradata/defaults.yaml` and change `enc_server: 192.168.0.199` to the address of your laptop running CouchDB.
+
+Start the master:
+```
 $ vagrant up master
 $ vagrant ssh master
 master$ sudo -s
-master# /etc/cron.d/default-add-all-nodes
 master# puppet agent -tv
 master# /vagrant/puppet-gonzo-demo/modules/classes/x_puppet/bin/bootstrap.sh
 ```
 
-## Starting
+## Laptop config
 
-Make sure each of these are running.  Only tested on OS X.
+Make sure each of these are running.  Currently only tested/documented on OS X, though they are intended to run on a server.
 
 ### Redis
 
