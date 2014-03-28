@@ -2,85 +2,127 @@ var gonzo = angular.module('gonzo', [
   'ngRoute',
   'restangular',
   'ui.bootstrap',
+  'ui.router',
   'nvd3ChartDirectives',
   'skipFilter',
   'timeagoFilter',
   'capitalizeFilter',
+  'releaseFilter',
   'md5shortFilter',
   'revisionFilter'
 ]);
 
 gonzo.config([
-  '$locationProvider', '$routeProvider', 'RestangularProvider',
-  function($locationProvider, $routeProvider, RestangularProvider) {
-    api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
-    $locationProvider.html5Mode(true);
-    $routeProvider.when('/releases/', {
-      templateUrl: '/assets/releases/index.html',
-      controller: 'ReleaseListCtrl'
-    });
-    $routeProvider.when('/releases/refresh', {
-      templateUrl: '/assets/releases/index.html',
+'$locationProvider', '$stateProvider', '$urlRouterProvider', 'RestangularProvider',
+function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvider) {
+  api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
+  $locationProvider.html5Mode(true);
+
+  // Now set up the states
+  $stateProvider
+    .state("index", {
+      url: "/",
+      views: {
+        'summary': {
+           templateUrl: '/assets/toc.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail': {
+           templateUrl: '/assets/releases/list.html',
+           controller: 'ReleaseListCtrl'
+         },
+      }
+    })
+    .state("releases", {
+      url: "/releases",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/toc.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/releases/list.html',
+           controller: 'ReleaseListCtrl'
+         },
+      }
+    })
+    .state("releases.refresh", {
+      url: "/refresh",
       controller: 'ReleaseListCtrl',
       resolve: {
         release: function(Restangular, $route) {
           return Restangular.one('releases').customPUT(null, 'refresh', null, api_token);
         }
       }
-    });
-    $routeProvider.when('/releases/:version', {
-      templateUrl: '/assets/releases/view.html',
-      controller: 'ReleaseEditCtrl',
-      resolve: {
-        release: function(Restangular, $route) {
-          return Restangular.one('releases', $route.current.params.version).get();
-        }
+    })
+    .state("releases.detail", {
+      url: "/:version",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/releases/summary.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/releases/detail.html',
+           controller: 'ChangeListCtrl'
+         },
       }
-    });
-    $routeProvider.when('/releases/:version/check', {
-      templateUrl: '/assets/releases/summary.html',
-      controller: 'ChangeCtrl',
-      resolve: {
-        release: function(Restangular, $route) {
-          return Restangular.one('releases', $route.current.params.version).customPUT(null, 'check', null, api_token);
-        }
+    })
+    .state("releases.detail.change", {
+      url: "/changes/:changeid",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/changes/summary.html',
+           controller: 'ChangeSummaryCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/changes/detail.html',
+           controller: 'ChangeDetailCtrl'
+         },
       }
-    });
-    $routeProvider.when('/releases/:version/summary', {
-      templateUrl: '/assets/releases/summary.html',
-      controller: 'ChangeCtrl'
-    });
-    $routeProvider.when('/releases/:version/changes', {
-      templateUrl: '/assets/releases/changes.html',
-      controller: 'ChangeCtrl'
-    });
-    $routeProvider.when('/releases/:version/reports', {
-      templateUrl: '/assets/releases/reports.html',
-      controller: 'ChangeCtrl'
-    });
-    $routeProvider.when('/nodes/:nodeId', {
-      templateUrl: '/assets/nodes/view.html',
-      controller: 'NodeCtrl'
-    });
-    $routeProvider.when('/nodes/', {
-      templateUrl: '/assets/nodes/index.html',
-      controller: 'NodeCtrl'
-    });
-    $routeProvider.when('/agents/:name', {
-      templateUrl: '/assets/agents/view.html',
-      controller: 'AgentCtrl'
-    });
-    $routeProvider.when('/agents/', {
-      templateUrl: '/assets/agents/index.html',
-      controller: 'AgentCtrl'
-    });
-    RestangularProvider.setBaseUrl('/api/v1');
-  }
-]);
+    })
+    .state("releases.detail.tier", {
+      url: "/tier/:tier",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/tiers/summary.html',
+           controller: 'ChangeSummaryCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/tiers/detail.html',
+           controller: 'ChangeDetailCtrl'
+         },
+      }
+    })
+    .state("nodes", {
+      url: "/nodes",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/toc.html',
+           controller: 'ReleaseListCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/nodes/list.html',
+           controller: 'NodeCtrl'
+         },
+      }
+    })
+    .state("nodes.detail", {
+      url: "/:certname",
+      views: {
+        'summary@': {
+           templateUrl: '/assets/nodes/summary.html',
+           controller: 'NodeSummaryCtrl'
+         },
+        'detail@': {
+           templateUrl: '/assets/nodes/detail.html',
+           controller: 'NodeDetailCtrl'
+         },
+      }
+    })
 
-// TODO: This breaks CouchDB, but without it we need to specify api_token in individual Restangular callss
-// gonzo.config([
-//   "$httpProvider", function(provider) {
-//     return provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
-//   },
-// ]);
+    RestangularProvider.setBaseUrl('/api/v1');
+  }]);
+
+gonzo.run(['$state', '$rootScope', '$urlRouter', function ($state, $rootScope, $urlRouter) {
+}])

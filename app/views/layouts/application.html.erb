@@ -5,16 +5,11 @@
     <title><%= content_for?(:title) ? yield(:title) : "Gonzo" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Gonzo" %>">
     <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => false %>
+    <%= javascript_include_tag :modernizr %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
   </head>
   <body>
-    <header>
-      <%= render 'layouts/navigation' %>
-    </header>
-    <main role="main">
-      <%= render 'layouts/messages' %>
-      <%= yield %>
-    </main>
+  <%= yield %>
   </body>
 </html>

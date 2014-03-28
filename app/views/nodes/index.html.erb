@@ -1,3 +1,32 @@
-<div class="container" ng-view>
-  
+<div id="main">
+  <div>
+
+    <div id="breadcrumbs">
+      <div>
+        <ul class="breadcrumb">
+          <li title="Summary"><a href="/">Gonzo</a> </li>
+          <li class="active" title="Nodes with failures">Summary</li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-row">
+      <div class="reverse-button span1" style="visibility: hidden;">
+        <a href="javascript:void(0)"><i class="fa fa-circle-arrow-left fa-3x"></i></a>
+      </div>
+
+      <div>
+        <div id="content">
+          <div>
+            <div class="pane-stack">
+              <div class="container" ui-view="summary">
+              </div>
+
+              <div class="container" ui-view="detail">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

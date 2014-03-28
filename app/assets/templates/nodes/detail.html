@@ -1,0 +1,97 @@
+<div class="pane3 stack-pane stack-full-pane">
+  <div>
+    <h2>
+      <span class="heading-label event">Node:</span> {{ node._id }}<br />
+    </h2>
+    <div class="attribute-table-wrapper">
+      <table class="attribute-table event">
+        <tbody>
+          <tr><th scope="row">Name:</th><td>{{ node._id }}</td></tr>
+          <tr><th scope="row">Tier:</th><td>{{ node.facts.gonzo_tier | uppercase }}</td></tr>
+          <tr><th scope="row">Release:</th><td>{{ node.facts.gonzo_release }}</td></tr>
+          <tr><th scope="row">Last seen:</th><td>{{node.lastseen * 1000 | date:'HH:mm:ss' }}</td></tr>
+          <tr><th scope="row">Revision:</th><td>{{ node._rev }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Facts</h3>
+    <div class="attribute-table-wrapper">
+      <table class="attribute-table event">
+        <tbody>
+          <tr ng-repeat="(key, value) in node.facts">
+            <th scope="row">{{ key }}:</th><td>{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Classes</h3>
+    <div class="list-table-wrapper">
+      <table class="list-table event-count-list">
+        <thead>
+          <tr>
+            <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Classname</span></th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-container-scroll">
+        <table class="list-table event-count-list" id="nodes-table">
+          <tbody>
+            <tr ng-repeat="class in node.classes track by $index">
+              <td class="primary">
+                <div class="event-indicator event-indicator-success"></div> <div title="{{class}}" class="text-truncated">{{class}}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Agents</h3>
+    <div class="list-table-wrapper">
+      <table class="list-table event-count-list">
+        <thead>
+          <tr>
+            <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Classname</span></th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-container-scroll">
+        <table class="list-table event-count-list" id="nodes-table">
+          <tbody>
+            <tr ng-repeat="agent in node.agents track by $index">
+              <td class="primary">
+                <div class="event-indicator event-indicator-success"></div> <div title="{{agent}}" class="text-truncated">{{agent}}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Collectives</h3>
+    <div class="list-table-wrapper">
+      <table class="list-table event-count-list">
+        <thead>
+          <tr>
+            <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Classname</span></th>
+          </tr>
+        </thead>
+      </table>
+      <div class="table-container-scroll">
+        <table class="list-table event-count-list" id="nodes-table">
+          <tbody>
+            <tr ng-repeat="collective in node.collectives track by $index">
+              <td class="primary">
+                <div class="event-indicator event-indicator-success"></div> <div title="{{collective}}" class="text-truncated">{{collective}}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <a class="jump-link spawn-link" target="_blank" href="/reports/{{ node._id }}">View run reports</a>
+  </div>
+</div>

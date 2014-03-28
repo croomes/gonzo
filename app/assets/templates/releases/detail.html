@@ -1,0 +1,184 @@
+
+<div class="pane2 stack-pane stack-full-pane">
+  <div>
+    <h2 title="{{version}}"><span class="heading-label">Release:</span> <span class="class-name">{{version | release}}</span></h2>
+    <ul class="nav nav-tabs" id="tabcontrol">
+      <li id="summary-tab-control" class="active">
+        <a href="#summary-tab" data-toggle="tab" data-url-fragment="summary">Summary</a>
+      </li>
+      <li id="changes-tab-control">
+        <a href="#changes-tab" data-toggle="tab" data-url-fragment="changes">Changes</a>
+      </li>
+      <li id="reports-tab-control">
+        <a href="#reports-tab" data-toggle="tab" data-url-fragment="reports">Reports</a>
+      </li>
+      <li class="dropdown" id="analyse-tab-control">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Actions <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li ng-click="analyse()"><a href="">Run impact analysis</a></li>
+          <li ng-click="reset()"><a href="">Clear results</a></li>
+          <li ng-click="setReleaseStatus('unavailable')"><a href="">Mark release unavailable</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- SUMMARY TAB -->
+      <div class="tab-pane active" id="summary-tab">
+        <div><p class="compact-hide">Number of nodes deployed, available for deployment, and impacted by this release for each tier:</p>
+          <div class="list-table-wrapper">
+            <table class="list-table event-count-list">
+              <thead>
+                <tr>
+                  <th scope="col" class="primary"><span>Tier</span></th>
+                  <th scope="col" class="numeric" title="Nodes already running this release"><span>Deployed</span></th>
+                  <th scope="col" class="numeric" title="Nodes that can have this release deployed"><span>Available</span></th>
+                  <th scope="col" class="numeric" title="Nodes that have had the impact of this release analysed"><span>Analysed</span></th>
+                  <th scope="col" class="divider"></th>
+                  <th scope="col" class="risk" title="Nodes with unassessed changes"><span>?</span></th>
+                  <th scope="col" class="risk" title="Nodes with only low risk changes"><span>Low</span></th>
+                  <th scope="col" class="risk" title="Nodes with medium risk changes"><span>Med</span></th>
+                  <th scope="col" class="risk" title="Nodes with high risk changes"><span>High</span></th>
+                  <th scope="col" class="indicator"></th>
+                </tr>
+              </thead>
+            </table>
+            <div class="table-container-scroll">
+              <table class="list-table event-count-list" id="nodes-table">
+                <tbody>
+                  <tr ng-repeat="tier in ['dev', 'uat', 'prod']">
+                    <td class="primary">
+                      <div class="tier-indicator tier-indicator-{{ tier }}"></div>
+                      <div title="{{ tier | uppercase }}" class="text-truncated">{{ tier | uppercase }}</div>
+                    </td>
+                    <td class="numeric">
+                      <span>{{ getDeployedCount(version) || '-' }}</span>
+                    </td>
+                    <td class="numeric">
+                      <span>{{ nodecount.total || '-' }}</span>
+                    </td>
+                    <td class="numeric">
+                      <span>{{ reports.length || '-' }}</span>
+                    </td>
+                    <td class="divider"></td>
+                    <td class="risk">
+                      <div title="Nodes with unassessed changes" class="change-indicator change-indicator-unassessed"></div>
+                      <span>{{ tierriskdata[tier].unassessed.length || '-'}}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with only low risk changes" class="change-indicator change-indicator-low"></div>
+                      <span>{{ tierriskdata[tier].low.length || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with medium risk changes" class="change-indicator change-indicator-medium"></div>
+                      <span>{{ tierriskdata[tier].medium.length || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Nodes with high risk changes" class="change-indicator change-indicator-high"></div>
+                      <span>{{ tierriskdata[tier].high.length || '-' }}</span>
+                    </td>
+                    <td class="transition">
+                      <a ui-sref='releases.detail.tier({version: version, tier: tier})'><i class="fa fa-chevron-right"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHANGES TAB -->
+      <div class="tab-pane" id="changes-tab"><div><p class="compact-hide">Changes to be implemented across all nodes:</p>
+        <div class="list-table-wrapper">
+          <table class="list-table change-count-list">
+            <thead>
+              <tr>
+                <th scope="col" class="risk">Risk</th>
+                <th scope="col" class="primart sort-header" data-sort="change"><span>Change</span></th>
+                <th scope="col" class="indicator"></th>
+              </tr>
+            </thead>
+          </table>
+          <div class="table-container-scroll">
+            <table class="list-table change-count-list" id="changes-table">
+              <tbody>
+                <tr ng-repeat="change in changes | skip">
+                  <td class="risk" ng-switch on="change.risk">
+                    <div ng-switch-when="low"    ng-click="unset_risk(change._id)" class="change-indicator change-indicator-low"></div>
+                    <div ng-switch-when="medium" ng-click="unset_risk(change._id)" class="change-indicator change-indicator-medium"></div>
+                    <div ng-switch-when="high"   ng-click="unset_risk(change._id)" class="change-indicator change-indicator-high"></div>
+                    <div ng-switch-default ng-click="set_risk(change._id, 'low')" class="change-indicator change-indicator-low"></div>
+                    <div ng-switch-default ng-click="set_risk(change._id, 'medium')" class="change-indicator change-indicator-medium"></div>
+                    <div ng-switch-default ng-click="set_risk(change._id, 'high')" class="change-indicator change-indicator-high"></div>
+                  </td>
+                  <td class="primary">
+                    <pre>{{change.output}}</pre>
+                  </td>
+                  <td class="transition">
+                    <a ui-sref='releases.detail.change({changeid: change._id})'><i class="fa fa-chevron-right"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- REPORTS TAB -->
+      <div class="tab-pane" id="reports-tab">
+        <div><p class="compact-hide">Number of nodes affected for each resource:</p>
+          <div class="list-table-wrapper">
+            <table class="list-table report-count-list">
+              <thead>
+                <tr>
+                  <th scope="col" class="primary sort-header sort-down" data-sort="resource"><span>Node</span></th>
+                  <th scope="col" class="risk" title="Unassessed changes"><span>?</span></th>
+                  <th scope="col" class="risk" title="Low risk changes"><span>Low</span></th>
+                  <th scope="col" class="risk" title="Medium risk changes"><span>Med</span></th>
+                  <th scope="col" class="risk" title="High risk changes"><span>High</span></th>
+                  <th scope="col" class="indicator"></th>
+                </tr>
+              </thead>
+            </table>
+            <div class="table-container-scroll">
+              <table class="list-table report-count-list" id="reports-table">
+                <tbody>
+                  <tr ng-repeat="report in reports">
+                    <td class="primary">
+                    <div class="tier-indicator tier-indicator-{{ tierhosts[report._id]['tier'] }}"></div>
+                      <div title="{{report._id}}" class="text-truncated">{{report._id}}</div>\
+                    </td>
+                    <td class="risk">
+                      <div title="Unassessed changes" class="change-indicator change-indicator-unassessed"></div>
+                      <span>{{ tierhosts[report._id]['unassessed'] || '-'}}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Low risk changes" class="change-indicator change-indicator-low"></div>
+                      <span>{{ tierhosts[report._id]['low'] || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="Medium risk changes" class="change-indicator change-indicator-medium"></div>
+                      <span>{{ tierhosts[report._id]['medium'] || '-' }}</span>
+                    </td>
+                    <td class="risk">
+                      <div title="High risk changes" class="change-indicator change-indicator-high"></div>
+                      <span>{{ tierhosts[report._id]['high'] || '-' }}</span>
+                    </td>
+                    <td class="transition">
+                      <a ui-sref='nodes.detail({certname: report._id})'><i class="fa fa-chevron-right"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

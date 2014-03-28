@@ -1,7 +1,6 @@
 function ReleaseEditCtrl($scope, $location, Restangular, release) {
   var original = release;
   $scope.release = Restangular.copy(original);
-  
 
   $scope.isClean = function() {
     return angular.equals(original, $scope.release);

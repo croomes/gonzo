@@ -1,6 +1,9 @@
 angular.module('skipFilter', []).filter('skip', function() {
   return function(input, empty) {
     // Do nothing is we need to include empty nodes
+    if (! input) {
+      return;
+    }
     if (empty) {
       return input;
     }

@@ -15,7 +15,8 @@ module Mcollective
       MCollective::Cache.setup(:release_results, 600)
 
       # TODO: Database names can't contain dots or begin with a digit :(
-      @db = connect({"db" => "#{release}"})
+      dbname = "r#{release}"
+      @db = connect({"db" => "#{dbname}"})
       @views = ["changelist", "risk", "hostrisk"]
 
       # Create helper views

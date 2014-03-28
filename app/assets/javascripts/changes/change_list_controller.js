@@ -1,8 +1,20 @@
-gonzo.controller('ChangeCtrl', ['$scope', '$routeParams', '$interval', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
-function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, nodeWrapper) {
+gonzo.controller('ChangeListCtrl', ['$scope', '$stateParams', '$interval', '$modal', 'Restangular', 'listener', 'changeWrapper', 'nodeWrapper',
+function($scope, $stateParams, $interval, $modal, Restangular, listener, changeWrapper, nodeWrapper) {
 
+  // Trigger mcollective noop run from the UI
   $scope.analyse = function() {
-    Restangular.oneUrl('nodes', "/releases/" + $routeParams.version + "/check.json").get().then(function(res) {
+
+    var modalInstance = $modal.open({
+      templateUrl: '/assets/releases/progress.html',
+      controller: 'ReleaseProgressCtrl',
+    });
+
+    modalInstance.result.then(function (selectedItem) {
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
+    Restangular.oneUrl('nodes', "/releases/" + $stateParams.version + "/check.json").get().then(function(res) {
       console.log("analyse");
       console.log(res);
     }, function(reason) {
@@ -10,29 +22,53 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
     });
   };
 
+  // Main data-loader.  Triggered whenver version changes
+  $scope.change_version = function(version) {
+    changeWrapper.reset(version);
+    changeWrapper.get_changes().then(function(res) {
+      $scope.changes = res;
+    }, function(reason) {
+      console.log(reason);
+    });
+    changeWrapper.get_reports().then(function(res) {
+      $scope.reports = res;
+      $scope.update_stats();
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
+  // Wrapper to call methods that need re-running when the version
+  // changes
+  $scope.update_stats = function() {
+    $scope.getRiskData();
+    $scope.getHostRiskData();
+    $scope.getTierRiskData();
+  }
+
   // Uses bulk get/save to remove nodes from "change" documents.
   // Keeps the changes in place so we don't lose metadata, just
   // the association to nodes, and removing the node reports.
   $scope.reset = function() {
-   changeWrapper.alldocs().then(function(docs) {
-     reset_changes = [];
-     docs.rows.forEach(function(entry) {
-       if (entry.doc.collection == "change") {
-         entry.doc.nodes = [];
-       }
-       else {
-         entry.doc._deleted = true;
-       }
-       reset_changes.push(entry.doc);
-     });
-     changeWrapper.bulkdocs(reset_changes).then(function(res) {
-       console.log("Cleared node associations from changes");
-     }, function(reason) {
-       console.log(reason);
-     });
-   }, function(reason) {
-     console.log(reason);
-   });
+    changeWrapper.alldocs().then(function(docs) {
+      reset_changes = [];
+      docs.rows.forEach(function(entry) {
+        if (entry.doc.collection == "change") {
+          entry.doc.nodes = [];
+        }
+        else {
+          entry.doc._deleted = true;
+        }
+        reset_changes.push(entry.doc);
+      });
+      changeWrapper.bulkdocs(reset_changes).then(function(res) {
+        console.log("Cleared node associations from changes");
+      }, function(reason) {
+        console.log(reason);
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
   };
 
   $scope.set_risk = function(id, risk) {
@@ -59,33 +95,8 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
     });
   };
 
-  $scope.submit = function() {
-    changeWrapper.add($scope.text).then(function(res) {
-      $scope.text = '';
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
-
-  $scope.remove = function(id) {
-    changeWrapper.remove(id).then(function(res) {
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
-
-  $scope.query = function() {
-    changeWrapper.query($scope.changes).then(function(res) {
-      $scope.changes = '';
-    }, function(reason) {
-      console.log(reason);
-    });
-  };
-
   $scope.get_tier = function(host) {
-    // TODO: enforce FQDNs everywhere!!
-    nodeWrapper.get_tier(host + '.croome.org').then(function(res) {
-      console.log(res);
+    nodeWrapper.get_tier(host).then(function(res) {
       return res;
     }, function(reason) {
       console.log(reason);
@@ -112,26 +123,33 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
     });
   };
 
+  // Used by release detail template
   $scope.getDeployedCount = function(version, tier) {
     if ($scope.deployment[version] && $scope.deployment[version][tier]) {
       return $scope.deployment[version][tier];
     }
+    else if ($scope.deployment[version]) {
+      total = 0;
+      for (var tier in $scope.deployment[version]) {
+        total += $scope.deployment[version][tier];
+      }
+      return total;
+    }
   };
 
   $scope.getHostRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.hosts = {};
 
-      ['dev', 'uat', 'prod'].forEach(function(cur_tier) {
+      ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.hostriskdata[cur_tier] = [];
 
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
-            if (row['key'] == cur_risk) {
+            if (row['key'] == cur_risk && row['value']) {
               Object.keys(row['value']).forEach(function(host, value) {
                 if (! $scope.hosts[host]) {
-                  // TODO: remove hardcoding - need to enforce FQDNs everywhere
-                  nodeWrapper.get_tier(host + '.croome.org').then(function(host_tier) {
+                  nodeWrapper.get_tier(host).then(function(host_tier) {
                     if (host_tier == cur_tier) {
                       found = false;
                       for(var i = 0, len = $scope.hostriskdata[cur_tier].length; i < len; i++) {
@@ -166,14 +184,13 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
   };
 
   $scope.getRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
       results = [];
       res.rows.forEach(function(row) {
         row.type = $scope.getRiskType(row.key);
         results.push(row);
       });
       $scope.riskdata = $scope.sortByRisk(results);
-      console.log($scope.riskdata);
 
       total = 0;
       $scope.riskdata.forEach(function(entry) {
@@ -207,13 +224,61 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
     });
 
     ['unassessed', 'low', 'medium', 'high'].forEach(function(risk) {
-    // ['high', 'medium', 'low', 'unassessed'].forEach(function(risk) {
       if (tmprisk[risk]) {
         results.push(tmprisk[risk]);
       }
     })
     return results;
   }
+
+  $scope.getTierRiskData = function() {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+      $scope.tierhosts = $scope.tierhosts || {};
+      $scope.tierriskdata = $scope.tierriskdata || {};
+
+      ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
+        $scope.tierriskdata[cur_tier] = {};
+
+        ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
+          res.rows.forEach(function(row) {
+            if (row['key'] == cur_risk && row['value']) {
+              Object.keys(row['value']).forEach(function(host, value) {
+
+                nodeWrapper.get_tier(host).then(function(host_tier) {
+                  if (host_tier == cur_tier) {
+                    if (! $scope.tierriskdata[cur_tier][cur_risk]) {
+                      $scope.tierriskdata[cur_tier][cur_risk] = [];
+                    }
+
+                    // Store the highest-rated change,
+                    // keeping track in tierhosts
+                    if (! $scope.tierhosts[host]) {
+                      $scope.tierriskdata[cur_tier][cur_risk].push(host);
+                      $scope.tierhosts[host] = {'tier': cur_tier, 'risk': cur_risk};
+                    }
+
+                    // And the count of every change
+                    if ($scope.tierhosts[host][cur_risk]) {
+                      $scope.tierhosts[host][cur_risk]++;
+                    }
+                    else {
+                      $scope.tierhosts[host][cur_risk] = 1;
+                    }
+
+                  }
+                }, function(reason) {
+                  console.log(reason);
+                });
+
+              });
+            }
+          });
+        });
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
 
   $scope.getNodeCount = function() {
     if (! $scope.nodecount) {
@@ -236,75 +301,72 @@ function($scope, $routeParams, $interval, Restangular, listener, changeWrapper, 
   }
 
   $scope.getResultMax = function() {
-    return $scope.results.length;
+    return $scope.reports.length;
   }
 
   $scope.getVersion = function() {
-    return angular.lowercase($routeParams.version);
+    // console.log("Setting version to: " + $stateParams.version);
+    return angular.lowercase($stateParams.version);
   }
 
+  // Set data from params
   $scope.version = $scope.getVersion();
-  $scope.results = [];
-  $scope.changes = [];
+
   $scope.tiernodes = {};
   $scope.deployment = {};
   $scope.hostriskdata = {};
   $scope.getRiskData();
   $scope.getDeploymentData();
-  $scope.getHostRiskData();
+  // $scope.getHostRiskData();
+  // $scope.getTierRiskData();
   $scope.getNodeTierData();
   $scope.getNodeCount();
 
-  // Summary progressbar
-  $interval(function() {
-    $scope.result_value = $scope.getResultMax();
-    $scope.result_max = $scope.getResultMax();
-    // $scope.getRiskData();
-    // $scope.risk_max = $scope.getRiskMax();
-  },1000);
+  // TODO: Shouldn't need to do this...
+  $scope.$watch('version', function(version) {
+    console.log("version changed!!  reloading data");
+    $scope.change_version(version);
+  });
 
-  var colorArray = ['#000000', '#660000', '#CC0000', '#FF6666', '#FF3333', '#FF6666', '#FFE6E6'];
-  $scope.colorFunction = function() {
-    return function(d, i) {
-      return colorArray[i];
-    };
+  $scope.$watch('changes'), function(changes) {
+    $scope.update_stats();
   }
-  $scope.xFunction = function() {
-    return function(d){
-        return d.key;
-    };
-  };
 
-  $scope.yFunction = function() {
-    return function(d){
-      return d.value;
-    };
-  };
-
+  // Listen for changes
   $scope.$on('newResult', function(event, result) {
     if (result.collection == "report") {
-      $scope.results.push(result);
+      if (! $scope.reports) {
+        $scope.reports = [];
+      }
+      $scope.reports.push(result);
     }
   });
 
   $scope.$on('newChange', function(event, result) {
     if (result.collection == "change") {
+      if (! $scope.changes) {
+        $scope.changes = [];
+      }
       $scope.changes.push(result);
     }
   });
 
   $scope.$on('delResult', function(event, id) {
-    for (var i = 0; i<$scope.results.length; i++) {
-      if ($scope.results[i]._id === id) {
-        $scope.results.splice(i,1);
+    if ($scope.reports) {
+      for (var i = 0; i<$scope.reports.length; i++) {
+        if ($scope.reports[i]._id === id) {
+          $scope.reports.splice(i,1);
+        }
       }
     }
   });
 
   $scope.$on('delChange', function(event, id) {
-    for (var i = 0; i<$scope.changes.length; i++) {
-      if ($scope.changes[i]._id === id) {
-        $scope.changes.splice(i,1);
+    if ($scope.changes) {
+      for (var i = 0; i<$scope.changes.length; i++) {
+        if ($scope.changes[i]._id === id) {
+          $scope.changes.splice(i,1);
+        }
       }
     }
   });

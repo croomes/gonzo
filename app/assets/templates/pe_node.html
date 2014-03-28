@@ -1,0 +1,393 @@
+<body style="">
+
+    <div id="header"><div><div class="topbar">
+<div class="topbar-inner">
+<div class="container">
+<ul class="pull-left navigation" id="pe-branding">
+<li id="logo">
+<a href="/" title="Puppet Enterprise console">Puppet Dashboard</a>
+</li>
+</ul>
+<ul class="navigation pull-right" id="pe-navigation">
+<li class="dropdown" data-dropdown="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources</a>
+<ul class="dropdown-menu pull-right help-menu" role="menu">
+<li>
+<a href="http://docs.puppetlabs.com/pe/3.2/?utm_medium=product&amp;utm_source=pe&amp;utm_campaign=3.2&amp;utm_content=docs" target="_blank">
+Documentation
+<span class="spawn-link"></span>
+</a>
+</li>
+<li>
+<a href="http://puppetlabs.com/services/customer-support/?utm_medium=product&amp;utm_source=pe&amp;utm_campaign=3.2&amp;utm_content=support" target="_blank">
+Support
+<span class="spawn-link"></span>
+</a>
+</li>
+<li>
+<a href="http://puppetlabs.com/contact/?utm_medium=product&amp;utm_source=pe&amp;utm_campaign=3.2&amp;utm_content=feedback" target="_blank">
+Feedback
+<span class="spawn-link"></span>
+</a>
+</li>
+<li class="divider" role="presentation"></li>
+<li>
+<a href="http://forge.puppetlabs.com/?utm_medium=product&amp;utm_source=pe&amp;utm_campaign=3.2&amp;utm_content=forge" target="_blank">
+Puppet Forge
+<span class="spawn-link"></span>
+</a>
+</li>
+<li>
+<a href="http://docs.puppetlabs.com/geppetto/latest/?utm_medium=product&amp;utm_source=pe&amp;utm_campaign=3.2&amp;utm_content=geppetto" target="_blank">
+Geppetto IDE
+<span class="spawn-link"></span>
+</a>
+</li>
+<li class="divider" role="presentation"></li>
+<li>
+<span class="version-information">Version: 3.2</span>
+</li>
+</ul>
+</li>
+
+<li class="dropdown" data-dropdown="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">simon</a>
+<ul class="dropdown-menu pull-right">
+<li id="account">
+<a href="/auth/account">My Account</a>
+</li>
+<li id="admin">
+<a href="/auth/admin">Admin Tools</a>
+</li>
+<li id="logout">
+<a href="/logout">Logout</a>
+</li>
+</ul>
+</li>
+
+<li>
+<a href="/console/" class="node-requests-link">No Node Requests</a>
+</li>
+
+<li>
+<span id="license_warning_span"></span>
+</li>
+<li>
+<a href="javascript:void(0)" id="license_link" data-original-title="" title=""><span id="license_actual_usage">3</span> of <span id="license_allowed_usage">10</span> Licenses</a>
+</li>
+
+</ul>
+<ul class="navigation" id="global-navigation">
+<li class="" id="navigation-home">
+<a href="/">Home</a>
+</li>
+<li id="navigation-events" class="active">
+<a href="/events/">Events</a>
+</li>
+<li class="" id="navigation-nodes">
+<a href="/nodes">Nodes</a>
+</li>
+<li class="" id="navigation-groups">
+<a href="/node_groups">Groups</a>
+</li>
+<li class="" id="navigation-classes">
+<a href="/node_classes">Classes</a>
+</li>
+<li class="" id="navigation-reports">
+<a href="/reports">Reports</a>
+</li>
+<li class="" id="navigation-inventory-search">
+<a href="/nodes/search">Inventory Search</a>
+</li>
+<li data-addclass-active="true">
+<a href="/live-management/">Live Management</a>
+</li>
+
+</ul>
+</div>
+</div>
+</div>
+<script src="/assets/console-app-utils.js" type="text/javascript"></script>
+</div></div>
+
+    <div id="scope"><div><p>Current status as of <span class="scope-age" title="2014-03-15 21:14:49 +00:00">12 minutes ago</span>. <label for="scope-selector">Exclude data more than</label>
+<select class="scope-selector" id="scope-selector">
+  <option value="30" selected="selected">30 minutes</option>
+  <option value="60">60 minutes</option>
+  <option value="180">3 hours</option>
+  <option value="360">6 hours</option>
+  <option value="720">12 hours</option>
+  <option value="1440">24 hours</option>
+</select>
+old.
+</p></div></div>
+
+    <div id="main"><div>
+<div id="breadcrumbs"><div><ul class="breadcrumb"><li title="Summary"><a href="javascript:void(0);">Summary</a> <span class="divider">/</span></li><li title="Classes with failures"><a href="javascript:void(0);">Classes with failures</a> <span class="divider">/</span></li><li class="active" title="X_puppet::Master">X_puppet::Master</li></ul>
+</div></div>
+
+<div class="main-row">
+  <div class="reverse-button span1" style="visibility: visible;">
+    <a href="javascript:void(0)"><i class="icon-circle-arrow-left icon-3x"></i></a>
+  </div>
+
+  <!-- the stack view -->
+  <div id="content"><div><div class="pane-stack"><div class="pane0 stack-pane stack-hidden-pane"><div><div id="state-summary">
+  <div id="state-summary-classes"><div><h2><span class="heading-label">Classes:</span> <span class="event-type-name">with events</span></h2>
+
+<div id="state-summary-classes-failures" class="state-summary-transitionable state-summary-selected" data-transition-to="failures">
+  <div class="state-summary-graph-text">With Failures</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-failure" style="width: 100%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-classes-successes" class="state-summary-transitionable" data-transition-to="successes">
+  <div class="state-summary-graph-text">With Changes</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-change" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-classes-skips" class="state-summary-transitionable" data-transition-to="skips">
+  <div class="state-summary-graph-text">With Skips</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-skip" style="width: 100%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-classes-noops" class="state-summary-transitionable" data-transition-to="noops">
+  <div class="state-summary-graph-text">With No-op</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-noop" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-classes-all" class="state-summary-transitionable" data-transition-to="all">
+  <a href="javascript:void(0)">All Classes <i class="icon-chevron-right"></i></a>
+</div>
+</div></div>
+  <div id="state-summary-nodes"><div><h2><span class="heading-label">Nodes:</span> <span class="event-type-name">with events</span></h2>
+
+<div id="state-summary-nodes-failures" class="state-summary-transitionable" data-transition-to="failures">
+  <div class="state-summary-graph-text">With Failures</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-failure" style="width: 100%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-nodes-successes" class="state-summary-transitionable" data-transition-to="successes">
+  <div class="state-summary-graph-text">With Changes</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-change" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-nodes-skips" class="state-summary-transitionable" data-transition-to="skips">
+  <div class="state-summary-graph-text">With Skips</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-skip" style="width: 100%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-nodes-noops" class="state-summary-transitionable" data-transition-to="noops">
+  <div class="state-summary-graph-text">With No-op</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-noop" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-nodes-all" class="state-summary-transitionable" data-transition-to="all">
+  <a href="javascript:void(0)">All Nodes <i class="icon-chevron-right"></i></a>
+</div>
+</div></div>
+  <div id="state-summary-resources"><div><h2><span class="heading-label">Resources:</span> <span class="event-type-name">with events</span></h2>
+
+<div id="state-summary-resources-failures" class="state-summary-transitionable" data-transition-to="failures">
+  <div class="state-summary-graph-text">Failed</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-failure" style="width: 50%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-resources-successes" class="state-summary-transitionable" data-transition-to="successes">
+  <div class="state-summary-graph-text">Changed</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-change" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-resources-skips" class="state-summary-transitionable" data-transition-to="skips">
+  <div class="state-summary-graph-text">Skipped</div>
+  <div class="state-summary-graph-count">1</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-skip" style="width: 50%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-resources-noops" class="state-summary-transitionable" data-transition-to="noops">
+  <div class="state-summary-graph-text">No-op</div>
+  <div class="state-summary-graph-count">0</div>
+  <div class="state-summary-graph">
+    <div class="state-summary-graph-noop" style="width: 0%;"></div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<div id="state-summary-resources-all" class="state-summary-transitionable" data-transition-to="all">
+  <a href="javascript:void(0)">All Resources <i class="icon-chevron-right"></i></a>
+</div>
+</div></div>
+</div>
+</div></div>
+
+
+<div class="pane1 stack-pane stack-compact-pane"><div><h2><span class="heading-label">Classes:</span> <span class="event-count">1</span> with <span class="event-type-name">failures</span></h2>
+<p class="compact-hide"><em>Number of nodes affected for each class:</em></p>
+<div class="list-table-wrapper">
+<table class="list-table event-count-list">
+  <thead>
+  <tr>
+    <th scope="col" class="primary sort-header sort-down" data-sort="containing-class"><span>Class</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+    <th scope="col" class="indicator"></th>
+  </tr>
+  </thead>
+</table>
+<div class="table-container-scroll">
+  <table class="list-table event-count-list" id="classes-table">
+    <tbody>
+    <tr class="list-container-selected"><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="X_puppet::Master" class="text-truncated">X_puppet::Master</div></td>
+<td class="numeric"><span>1</span></td>
+<td class="numeric"><span>1</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="transition"><i class="icon-chevron-right"></i></td>
+</tr></tbody>
+  </table>
+</div>
+
+</div>
+</div></div>
+
+<div class="pane2 stack-pane stack-full-pane"><div><h2 title="X_puppet::Master"><span class="heading-label">Class:</span> <span class="class-name">X_puppet::Master</span></h2>
+
+<ul class="nav nav-tabs" id="tabcontrol">
+  <li id="nodes-tab-control" class="active"><a href="#nodes-tab" data-toggle="tab" data-url-fragment="nodes">Nodes with failures</a></li>
+  <li id="resources-tab-control"><a href="#resources-tab" data-toggle="tab" data-url-fragment="resources">Resources with failures</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="nodes-tab"><div><p class="compact-hide">Number of resources affected for each node:</p>
+<div class="list-table-wrapper">
+<table class="list-table event-count-list">
+  <thead>
+  <tr>
+    <th scope="col" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+    <th scope="col" class="indicator"></th>
+  </tr>
+  </thead>
+</table>
+<div class="table-container-scroll">
+  <table class="list-table event-count-list" id="nodes-table">
+    <tbody>
+    <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="master" class="text-truncated">master</div></td>
+<td class="numeric"><span>1</span></td>
+<td class="numeric"><span>1</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="transition"><i class="icon-chevron-right"></i></td>
+</tr></tbody>
+  </table>
+</div>
+
+</div>
+</div></div>
+  <div class="tab-pane" id="resources-tab"><div><p class="compact-hide">Number of nodes affected for each resource:</p>
+<div class="list-table-wrapper">
+<table class="list-table event-count-list">
+  <thead>
+  <tr>
+    <th scope="col" class="primary sort-header sort-down" data-sort="resource"><span>Resource</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="failures"><span>Failures</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="skips"><span>Skips</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="successes"><span>Changes</span></th>
+    <th scope="col" class="numeric sort-header" data-sort="noops"><span>No-op</span></th>
+    <th scope="col" class="indicator"></th>
+  </tr>
+  </thead>
+</table>
+<div class="table-container-scroll">
+  <table class="list-table event-count-list" id="resources-table">
+    <tbody>
+    <tr><td class="primary"><div class="event-indicator event-indicator-failure"></div> <div title="Package[hiera-http]" class="text-truncated">Package[<em>hiera-http</em>]</div></td>
+<td class="numeric"><span>1</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="numeric"><span>–</span></td>
+<td class="transition"><i class="icon-chevron-right"></i></td>
+</tr></tbody>
+  </table>
+</div>
+
+</div>
+</div></div>
+</div>
+</div></div></div></div></div><!-- /#content -->
+</div>
+</div></div>
+
+    <div id="alerts">
+    </div>
+
+    <div id="unsupported">
+      <p>You are using a browser that is not supported or you have disabled JavaScript. For more information, refer to the
+      <a href="http://docs.puppetlabs.com/pe/latest/console_accessing.html#browser-requirements">Puppet Enterprise Browser Requirements.</a></p>
+    </div>
+
+    <script src="scripts/vendor/34b934c.require.js"></script>
+
+    <script>
+
+      window.CONFIG = {"base_url":"events/","console_base_url":"/"}
+
+      require.config({
+        baseUrl: './scripts'
+      });
+    </script>
+
+
+
+    <script src="scripts/34b934c.config.js"></script>
+    <script src="scripts/34b934c.main.js"></script>
+  
+
+</body>

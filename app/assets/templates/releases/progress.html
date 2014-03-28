@@ -1,0 +1,13 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Running impact analysis</h4>
+  </div>
+  <div class="modal-body">
+    <progressbar max="result_max" value="reports.length" dynamic-max="true">{{reports.length}} / {{result_max}}</progressbar>
+    Executing dry-run on up to {{result_max}} nodes.  Offline nodes will not respond.  Results will continue to be processed after this pop-up is closed.
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" ng-click="close()">Close</button>
+  </div>
+</div>

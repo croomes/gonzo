@@ -40,6 +40,9 @@ gem 'resque', require: 'resque/server'
 
 gem 'bootstrap-sass'
 gem 'bootstrap_form'
+gem 'modernizr-rails'
+gem "font-awesome-rails"
+
 group :development do
   gem 'rails_layout'
   gem 'better_errors'

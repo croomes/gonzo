@@ -59,7 +59,7 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
   $scope.$on('newNode', function(event, node) {
     // Skip design docs
     if (node.identity) {
-      $scope.nodes.push(node);  
+      $scope.nodes.push(node);
     }
   });
 
