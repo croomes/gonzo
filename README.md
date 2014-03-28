@@ -4,15 +4,19 @@
 
 Gonzo lets you assess the impact of your Puppet change before rolling it out across your server estate.  It takes over after continuous integration tools have run their tests and deployed the release to the Puppet Masters, but before clients have been updated.
 
-![Change summary](https://github.com/croomes/gonzo/raw/master/screenshots/change_summary.png)
-![Change review](https://github.com/croomes/gonzo/raw/master/screenshots/changes.png)
-![Node inventory](https://github.com/croomes/gonzo/raw/master/screenshots/nodes.png)
+Gonzo's goal is to increase confidence in Puppet changes by making it easier to verify that all changes are intentional and understood.
+
+![Release List](https://github.com/croomes/gonzo/raw/master/screenshots/main.jpg)
+![Release Summary](https://github.com/croomes/gonzo/raw/master/screenshots/release.jpg)
+![Release Changes](https://github.com/croomes/gonzo/raw/master/screenshots/changes.jpg)
+![Release Reports](https://github.com/croomes/gonzo/raw/master/screenshots/reports.jpg)
+![Node inventory](https://github.com/croomes/gonzo/raw/master/screenshots/nodes.jpg)
 
 ## Technical Overview
 
 Changes are implemented using standard Puppet catalogs.  Each release becomes a new environment, using [dynamic environments](http://puppetlabs.com/blog/git-workflow-and-puppet-environments) on the Puppet Masters.
 
-The web console is used to review releases, initiate "noop" runs, review the results and assess the impact.  The console is written in [AngularJS](http://angularjs.org/) with a Ruby on Rails backend.  MCollective is used to run pre-flight "noop" Puppet runs and it stores prospective changes in CouchDB, a JSON document store.  Portions of the CouchDB database are replicated in real-time to the browser using PouchDB, allowing instant updates to the web console.  Replication is bi-directional: risk assessments are remembered across multiple runs. 
+The web console is used to review releases, initiate "noop" runs, review the results and assess the impact.  The console is written in [AngularJS](http://angularjs.org/) with a Ruby on Rails backend.  MCollective is used to run pre-flight "noop" Puppet runs and it stores prospective changes in CouchDB, a JSON document store.  Portions of the CouchDB database are replicated in real-time to the browser using PouchDB, allowing instant updates to the web console.  Replication is bi-directional: risk assessments are remembered across multiple runs.
 
 ## System Dependencies
 
@@ -27,11 +31,15 @@ The web console requires a modern browser that supports IndexedDB (Chrome, Firef
 
 ## Installation
 
-See [SETUP.md](https://github.com/croomes/gonzo/blob/master/SETUP.md).
+See [SETUP.md](https://github.com/croomes/gonzo/blob/master/SETUP.md).  You will probably want to use [puppet-gonzo-demo](https://github.com/croomes/puppet-gonzo-demo) to setup a standalone demo.
 
 ## Security
 
 There is currently no authentication or access control model in place.  Database replication and API calls are currently in clear text and use default/guessable passwords.  It is not suitable for public-facing deployments.
+
+## Contributing
+
+Please help!  Documentation is especially poor at this stage, and ideally packages created for easier installation.  I'd also like to remove Rails and switch to Sinatra as the server-side API very minimal.  See [TODO.md](https://github.com/croomes/gonzo/blob/master/TODO.md) for a list of ideas.
 
 ## Contact
 
