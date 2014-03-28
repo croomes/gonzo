@@ -10,7 +10,7 @@
      data-transition-to="failures">
   <div class="release-summary-graph-text">
     <div class="release-indicator release-indicator-{{ release.status | lowercase }}"></div>
-    {{ release.slug }}
+    {{ release.slug | release }}
   </div>
   <div class="release-summary-graph-count">{{ deployment[release.slug].total || '-' }}</div>
   <progress max="getReleaseMaxNodes(release.slug)" dynamic-max="true" class="release-summary-graph">

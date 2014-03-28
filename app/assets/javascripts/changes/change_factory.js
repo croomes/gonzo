@@ -4,16 +4,16 @@ gonzo.factory('changedb', ['$stateParams', function($stateParams) {
   // TODO: There are a few other rules we should check for.
 
   if ($stateParams.version) {
-    version = angular.lowercase($stateParams.version);
+    release_db = "r" + angular.lowercase($stateParams.version);
   }
   else {
-    version = '1.0.0';
+    return null;
   }
 
-  console.log("change factory, version: " + version);
-  var changedb = new PouchDB(version);
-  PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});
-  PouchDB.replicate(version, 'http://127.0.0.1:5984/' + version, {continuous: true});
+  console.log("change factory, version: " + release_db);
+  var changedb = new PouchDB(release_db);
+  PouchDB.replicate('http://127.0.0.1:5984/' + release_db, release_db, {continuous: true});
+  PouchDB.replicate(release_db, 'http://127.0.0.1:5984/' + release_db, {continuous: true});
   return changedb;
 
 }]);
@@ -50,10 +50,11 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changedb', function($q, $ro
 
   return {
     reset: function(version) {
-      changedb = new PouchDB(version);
-      console.log("reset change factory to version: " + version);
-      PouchDB.replicate('http://127.0.0.1:5984/' + version, version, {continuous: true});
-      PouchDB.replicate(version, 'http://127.0.0.1:5984/' + version, {continuous: true});
+      release_db = "r" + version;
+      changedb = new PouchDB(release_db);
+      console.log("reset change factory to version: " + release_db);
+      PouchDB.replicate('http://127.0.0.1:5984/' + release_db, release_db, {continuous: true});
+      PouchDB.replicate(release_db, 'http://127.0.0.1:5984/' + release_db, {continuous: true});
     },
     query: function(text) {
       var deferred = $q.defer();
@@ -153,6 +154,7 @@ gonzo.factory('changeWrapper', ['$q', '$rootScope', 'changedb', function($q, $ro
       changedb.put(doc, function(err, res) {
         $rootScope.$apply(function() {
           if (err) {
+            console.log("put err:");
             deferred.reject(err);
           } else {
             console.log("put ok:");

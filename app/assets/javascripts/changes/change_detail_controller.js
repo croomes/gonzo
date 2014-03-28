@@ -37,7 +37,7 @@ function($scope, $stateParams, changeWrapper, nodeWrapper, listener, Restangular
   };
 
   $scope.getTierRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.tierhosts = $scope.tierhosts || {};
       $scope.tierriskdata = $scope.tierriskdata || {};
 

@@ -1,12 +1,12 @@
 <div class="pane3 stack-pane stack-full-pane">
   <div>
     <h2>
-      <span class="heading-label event">Node:</span> {{ node.key }}<br />
+      <span class="heading-label event">Node:</span> {{ node._id }}<br />
     </h2>
     <div class="attribute-table-wrapper">
       <table class="attribute-table event">
         <tbody>
-          <tr><th scope="row">Name:</th><td>{{ node.key }}</td></tr>
+          <tr><th scope="row">Name:</th><td>{{ node._id }}</td></tr>
           <tr><th scope="row">Tier:</th><td>{{ node.facts.gonzo_tier | uppercase }}</td></tr>
           <tr><th scope="row">Release:</th><td>{{ node.facts.gonzo_release }}</td></tr>
           <tr><th scope="row">Last seen:</th><td>{{node.lastseen * 1000 | date:'HH:mm:ss' }}</td></tr>
@@ -92,6 +92,6 @@
       </div>
     </div>
 
-    <a class="jump-link spawn-link" target="_blank" href="/reports/{{ node.key }}">View run reports</a>
+    <a class="jump-link spawn-link" target="_blank" href="/reports/{{ node._id }}">View run reports</a>
   </div>
 </div>

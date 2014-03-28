@@ -9,7 +9,7 @@
         <thead>
           <tr>
             <th scope="col" ng-click="predicate = 'facts.gonzo_tier'; reverse=!reverse" class="event sort-header sort-down" data-sort="status"><span>Tier</span></th>
-            <th scope="col" ng-click="predicate = 'key'; reverse=!reverse" class="primary sort-header" data-sort="certname"><span>Node</span></th>
+            <th scope="col" ng-click="predicate = '_id'; reverse=!reverse" class="primary sort-header" data-sort="certname"><span>Node</span></th>
           </tr>
         </thead>
       </table>
@@ -17,12 +17,12 @@
         <table class="list-table event-list" id="resource-events-table">
           <tbody>
             <tr ng-repeat="node in filtered = (nodes | orderBy:predicate:reverse)" 
-                ng-class='row_class(node.key)' 
-                ui-sref='nodes.detail({certname: node.key})'>
+                ng-class='row_class(node._id)' 
+                ui-sref='nodes.detail({certname: node._id})'>
               <td class="event">
                 <div class="tier-indicator tier-indicator-{{ node.facts.gonzo_tier }}"></div> 
                 {{ node.facts.gonzo_tier | uppercase }}</td>
-              <td class="primary"><div title="master" class="text-truncated">{{ node.key }}</div></td>
+              <td class="primary"><div title="master" class="text-truncated">{{ node._id }}</div></td>
             </tr>
           </tbody>
         </table>

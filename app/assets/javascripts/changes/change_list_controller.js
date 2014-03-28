@@ -41,7 +41,6 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   // Wrapper to call methods that need re-running when the version
   // changes
   $scope.update_stats = function() {
-    console.log("update_stats")
     $scope.getRiskData();
     $scope.getHostRiskData();
     $scope.getTierRiskData();
@@ -96,43 +95,8 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
   };
 
-  // $scope.submit = function() {
-  //   changeWrapper.add($scope.text).then(function(res) {
-  //     $scope.text = '';
-  //   }, function(reason) {
-  //     console.log(reason);
-  //   });
-  // };
-
-  // $scope.remove = function(id) {
-  //   changeWrapper.remove(id).then(function(res) {
-  //   }, function(reason) {
-  //     console.log(reason);
-  //   });
-  // };
-
-  // $scope.query = function() {
-  //   console.log("XXXXX Query")
-  //   changeWrapper.query($scope.changes).then(function(res) {
-  //     $scope.changes = '';
-  //   }, function(reason) {
-  //     console.log(reason);
-  //   });
-  // };
-
-  // $scope.get = function(id) {
-  //   changeWrapper.get(id).then(function(res) {
-  //     console.log("Loaded change");
-  //     $scope.change = res;
-  //   }, function(reason) {
-  //     console.log(reason);
-  //   });
-  // };
-
   $scope.get_tier = function(host) {
-    // TODO: enforce FQDNs everywhere!!
-    nodeWrapper.get_tier(host + '.croome.org').then(function(res) {
-      // console.log(res);
+    nodeWrapper.get_tier(host).then(function(res) {
       return res;
     }, function(reason) {
       console.log(reason);
@@ -174,7 +138,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   };
 
   $scope.getHostRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.hosts = {};
 
       ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
@@ -185,8 +149,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
             if (row['key'] == cur_risk && row['value']) {
               Object.keys(row['value']).forEach(function(host, value) {
                 if (! $scope.hosts[host]) {
-                  // TODO: remove hardcoding - need to enforce FQDNs everywhere
-                  nodeWrapper.get_tier(host + '.croome.org').then(function(host_tier) {
+                  nodeWrapper.get_tier(host).then(function(host_tier) {
                     if (host_tier == cur_tier) {
                       found = false;
                       for(var i = 0, len = $scope.hostriskdata[cur_tier].length; i < len; i++) {
@@ -221,14 +184,13 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   };
 
   $scope.getRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/risk/_view/all?reduce=true&group=true').get().then(function(res) {
       results = [];
       res.rows.forEach(function(row) {
         row.type = $scope.getRiskType(row.key);
         results.push(row);
       });
       $scope.riskdata = $scope.sortByRisk(results);
-      // console.log($scope.riskdata);
 
       total = 0;
       $scope.riskdata.forEach(function(entry) {
@@ -262,7 +224,6 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
 
     ['unassessed', 'low', 'medium', 'high'].forEach(function(risk) {
-    // ['high', 'medium', 'low', 'unassessed'].forEach(function(risk) {
       if (tmprisk[risk]) {
         results.push(tmprisk[risk]);
       }
@@ -271,7 +232,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   }
 
   $scope.getTierRiskData = function() {
-    Restangular.oneUrl('nodes', 'http://localhost:5984/' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
+    Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
       $scope.tierhosts = $scope.tierhosts || {};
       $scope.tierriskdata = $scope.tierriskdata || {};
 
@@ -283,7 +244,6 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
             if (row['key'] == cur_risk && row['value']) {
               Object.keys(row['value']).forEach(function(host, value) {
 
-                // TODO: issues with some hostnames - need to enforce FQDNs everywhere
                 nodeWrapper.get_tier(host).then(function(host_tier) {
                   if (host_tier == cur_tier) {
                     if (! $scope.tierriskdata[cur_tier][cur_risk]) {

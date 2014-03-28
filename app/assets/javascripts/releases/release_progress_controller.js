@@ -1,33 +1,22 @@
-var ReleaseProgressCtrl = function ($scope, $interval, $modalInstance) {
-
-  // Summary progressbar
-  var progressInterval = $interval(function() {
-    $scope.result_value = $scope.getResultMax();
-    $scope.result_max = $scope.getResultMax();
-    console.log("results=");
-    console.log($scope.results);
-  }, 1000);
+var ReleaseProgressCtrl = function ($scope, $interval, $modalInstance, nodeWrapper) {
 
   $scope.close = function () {
     $modalInstance.dismiss('close');
   };
 
   $scope.getResultMax = function() {
-    return $scope.reports.length;
+    nodeWrapper.nodecount().then(function(res) {
+      $scope.result_max = res.rows[0].value['total'];
+    }, function(reason) {
+      console.log(reason);
+    });
   }
 
   // Empty reports
   $scope.reports= [];
 
-  // Clear up timer when we lose scope
-  $scope.$on(
-    "$destroy", function( event ) {
-      if (angular.isDefined(progressInterval)) {
-        $interval.cancel(progressInterval);
-        progressInterval = undefined;
-      }
-    }
-  );
+  // Set expected node total
+  $scope.getResultMax();
 
   // Listen for changes
   $scope.$on('newResult', function(event, result) {
