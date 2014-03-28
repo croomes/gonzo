@@ -6,10 +6,34 @@ Gonzo lets you assess the impact of your Puppet change before rolling it out acr
 
 Gonzo's goal is to increase confidence in Puppet changes by making it easier to verify that all changes are intentional and understood.
 
+## List Available Releases
+
+See what releases are available to deploy, and current deployment status across tiers (DEV, UAT, PROD):
+
 ![Release List](https://github.com/croomes/gonzo/raw/master/screenshots/main.jpg)
+
+## Release Summary
+
+Initiate dry-run of change across all nodes, and view assessment summary across tiers.  Trigger rollout (or change management process):
+
 ![Release Summary](https://github.com/croomes/gonzo/raw/master/screenshots/release.jpg)
+
+## Change Assessment
+
+View all changes and assess as low, medium or high risk:
+
 ![Release Changes](https://github.com/croomes/gonzo/raw/master/screenshots/changes.jpg)
+
+## Report Summary
+
+View changes be node:
+
 ![Release Reports](https://github.com/croomes/gonzo/raw/master/screenshots/reports.jpg)
+
+## Node List
+
+View summary of each node:
+
 ![Node inventory](https://github.com/croomes/gonzo/raw/master/screenshots/nodes.jpg)
 
 ## Technical Overview
