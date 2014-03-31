@@ -11,6 +11,7 @@ Gonzo::Application.routes.draw do
       get 'check'
       get 'summary'
       resources :changes, only: :show
+      resources :tiers, only: :show
     end
   end
   resources :products do

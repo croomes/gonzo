@@ -3,6 +3,7 @@ var gonzo = angular.module('gonzo', [
   'restangular',
   'ui.bootstrap',
   'ui.router',
+  'ngTagsInput',
   'nvd3ChartDirectives',
   'skipFilter',
   'timeagoFilter',
@@ -13,8 +14,8 @@ var gonzo = angular.module('gonzo', [
 ]);
 
 gonzo.config([
-'$locationProvider', '$stateProvider', '$urlRouterProvider', 'RestangularProvider',
-function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvider) {
+'$locationProvider', '$stateProvider', '$urlRouterProvider', 'RestangularProvider', 'tagsInputConfigProvider',
+function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvider, tagsInputConfigProvider) {
   api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
   $locationProvider.html5Mode(true);
 
@@ -82,15 +83,15 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
       }
     })
     .state("releases.detail.tier", {
-      url: "/tier/:tier",
+      url: "/tiers/:tier",
       views: {
         'summary@': {
            templateUrl: '/assets/tiers/summary.html',
-           controller: 'ChangeSummaryCtrl'
+           controller: 'ReleaseListCtrl'
          },
         'detail@': {
-           templateUrl: '/assets/tiers/detail.html',
-           controller: 'ChangeDetailCtrl'
+           templateUrl: '/assets/tiers/list.html',
+           controller: 'NodeCtrl'
          },
       }
     })
@@ -122,6 +123,16 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     })
 
     RestangularProvider.setBaseUrl('/api/v1');
+
+    // Can probably remove this, and set manually when we call the directive
+    tagsInputConfigProvider
+      .setDefaults('tagsInput', {
+        placeholder: '',
+      })
+      .setDefaults('autoComplete', {
+        minLength: 0,
+      });
+
   }]);
 
 gonzo.run(['$state', '$rootScope', '$urlRouter', function ($state, $rootScope, $urlRouter) {
