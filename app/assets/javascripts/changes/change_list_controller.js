@@ -16,6 +16,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
     Restangular.oneUrl('nodes', "/releases/" + $stateParams.version + "/check.json").get().then(function(res) {
       console.log("analyse");
+      $scope.reset();
       console.log(res);
     }, function(reason) {
       console.log(reason);
@@ -52,6 +53,8 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   $scope.reset = function() {
     changeWrapper.alldocs().then(function(docs) {
       reset_changes = [];
+      $scope.analysed = {};
+      $scope.reports = {};
       docs.rows.forEach(function(entry) {
         if (entry.doc.collection == "change") {
           entry.doc.nodes = [];
@@ -62,7 +65,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
         reset_changes.push(entry.doc);
       });
       changeWrapper.bulkdocs(reset_changes).then(function(res) {
-        console.log("Cleared node associations from changes");
+        console.log("Cleared node associations from changes and removed reports");
       }, function(reason) {
         console.log(reason);
       });
@@ -339,6 +342,20 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
         $scope.reports = [];
       }
       $scope.reports.push(result);
+
+      // Needed for analysed stat on summary page
+      if ($scope.version && result._id) {
+        if (! $scope.analysed) { $scope.analysed = {}; }
+        if (! $scope.analysed[$scope.version]) { $scope.analysed[$scope.version] = {}; }
+        nodeWrapper.get_tier(result._id).then(function(tier) {
+          if ($scope.analysed[$scope.version][tier]) {
+            $scope.analysed[$scope.version][tier]++
+          }
+          else {
+            $scope.analysed[$scope.version][tier] = 1;
+          }
+        });
+      }
     }
   });
 
@@ -355,7 +372,14 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     if ($scope.reports) {
       for (var i = 0; i<$scope.reports.length; i++) {
         if ($scope.reports[i]._id === id) {
-          $scope.reports.splice(i,1);
+          $scope.reports.splice(i, 1);
+
+          // Needed for analysed stat on summary page
+          nodeWrapper.get_tier(id).then(function(tier) {
+            if ($scope.analysed[$scope.version][tier]) {
+              $scope.analysed[$scope.version][tier]--;
+            }
+          });
         }
       }
     }

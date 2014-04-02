@@ -55,13 +55,13 @@
                       <div title="{{ tier | uppercase }}" class="text-truncated">{{ tier | uppercase }}</div>
                     </td>
                     <td class="numeric">
-                      <span>{{ getDeployedCount(version) || '-' }}</span>
+                      <span>{{ getDeployedCount(version, tier) || '-' }}</span>
                     </td>
                     <td class="numeric">
-                      <span>{{ nodecount.total || '-' }}</span>
+                      <span>{{ nodecount[tier] || '-' }}</span>
                     </td>
                     <td class="numeric">
-                      <span>{{ reports.length || '-' }}</span>
+                      <span>{{ analysed[version][tier] || '-' }}</span>
                     </td>
                     <td class="divider"></td>
                     <td class="risk">

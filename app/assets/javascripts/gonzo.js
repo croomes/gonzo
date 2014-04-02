@@ -3,7 +3,6 @@ var gonzo = angular.module('gonzo', [
   'restangular',
   'ui.bootstrap',
   'ui.router',
-  'ngTagsInput',
   'nvd3ChartDirectives',
   'skipFilter',
   'timeagoFilter',
@@ -14,8 +13,8 @@ var gonzo = angular.module('gonzo', [
 ]);
 
 gonzo.config([
-'$locationProvider', '$stateProvider', '$urlRouterProvider', 'RestangularProvider', 'tagsInputConfigProvider',
-function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvider, tagsInputConfigProvider) {
+'$locationProvider', '$stateProvider', '$urlRouterProvider', 'RestangularProvider',
+function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvider) {
   api_token = {'X-CSRF-Token':$('meta[name=csrf-token]').attr('content')};
   $locationProvider.html5Mode(true);
 
@@ -123,15 +122,6 @@ function($locationProvider, $stateProvider, $urlRouterProvider, RestangularProvi
     })
 
     RestangularProvider.setBaseUrl('/api/v1');
-
-    // Can probably remove this, and set manually when we call the directive
-    tagsInputConfigProvider
-      .setDefaults('tagsInput', {
-        placeholder: '',
-      })
-      .setDefaults('autoComplete', {
-        minLength: 0,
-      });
 
   }]);
 
