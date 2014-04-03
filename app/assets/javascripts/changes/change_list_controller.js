@@ -42,6 +42,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   // Wrapper to call methods that need re-running when the version
   // changes
   $scope.update_stats = function() {
+    $scope.refreshAnalysed();
     $scope.getRiskData();
     $scope.getHostRiskData();
     $scope.getTierRiskData();
@@ -53,7 +54,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   $scope.reset = function() {
     changeWrapper.alldocs().then(function(docs) {
       reset_changes = [];
-      $scope.analysed = {};
+      // $scope.analysed = {};
       $scope.reports = {};
       docs.rows.forEach(function(entry) {
         if (entry.doc.collection == "change") {
@@ -125,6 +126,40 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
       console.log(reason);
     });
   };
+
+  $scope.refreshAnalysed = function() {
+    if ($scope.reports) {
+      $scope.reports.forEach(function(report) {
+        $scope.addAnalysedReport($scope.version, report._id);
+      });
+    }
+  };
+
+  $scope.addAnalysedReport = function(version, id) {
+    if (version && id) {
+      $scope.analysed = $scope.analysed || {};
+      $scope.analysed[version] = $scope.analysed[version] || {};
+      nodeWrapper.get_tier(id).then(function(tier) {
+        $scope.analysed[version][tier] = $scope.analysed[version][tier] || {};
+        $scope.analysed[version][tier].length = $scope.analysed[version][tier].length || 0;
+        if (! $scope.analysed[version][tier][id]) {
+          $scope.analysed[version][tier][id] = true;
+          $scope.analysed[version][tier].length++
+        }
+      });
+    }
+  }
+
+  $scope.removeAnalysedReport = function(version, id) {
+    nodeWrapper.get_tier(id).then(function(tier) {
+      if ($scope.analysed[version][tier] && $scope.analysed[version][tier][id]) {
+        delete $scope.analysed[$scope.version][tier];
+        if ($scope.analysed[$scope.version][tier].length > 0) {
+          $scope.analysed[$scope.version][tier].length--;
+        }
+      }
+    });
+  }
 
   // Used by release detail template
   $scope.getDeployedCount = function(version, tier) {
@@ -347,25 +382,16 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   }
 
   // Listen for changes
-  $scope.$on('newResult', function(event, result) {
-    if (result.collection == "report") {
+  $scope.$on('newResult', function(event, report) {
+    if (report.collection == "report") {
       if (! $scope.reports) {
         $scope.reports = [];
       }
-      $scope.reports.push(result);
+      $scope.reports.push(report);
 
       // Needed for analysed stat on summary page
-      if ($scope.version && result._id) {
-        if (! $scope.analysed) { $scope.analysed = {}; }
-        if (! $scope.analysed[$scope.version]) { $scope.analysed[$scope.version] = {}; }
-        nodeWrapper.get_tier(result._id).then(function(tier) {
-          if ($scope.analysed[$scope.version][tier]) {
-            $scope.analysed[$scope.version][tier]++
-          }
-          else {
-            $scope.analysed[$scope.version][tier] = 1;
-          }
-        });
+      if ($scope.version && report._id) {
+        $scope.addAnalysedReport($scope.version, report._id);
       }
     }
   });
@@ -386,11 +412,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
           $scope.reports.splice(i, 1);
 
           // Needed for analysed stat on summary page
-          nodeWrapper.get_tier(id).then(function(tier) {
-            if ($scope.analysed[$scope.version][tier]) {
-              $scope.analysed[$scope.version][tier]--;
-            }
-          });
+          $scope.removeAnalysedReport($scope.version, id);
         }
       }
     }
