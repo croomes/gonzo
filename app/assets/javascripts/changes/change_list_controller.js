@@ -266,7 +266,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
                     // Store the highest-rated change,
                     // keeping track in tierhosts
-                    if (! $scope.tierhosts[host]) {
+                    if (! $scope.tierhosts[host]['risk']) {
                       $scope.tierriskdata[cur_tier][cur_risk].push(host);
                       $scope.tierhosts[host] = {'tier': cur_tier, 'risk': cur_risk};
                     }
