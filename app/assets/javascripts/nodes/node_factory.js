@@ -127,6 +127,10 @@ gonzo.factory('nodeWrapper', ['$q', '$rootScope', 'nodes', 'Restangular', functi
       return Restangular.oneUrl('nodes',
         'http://localhost:5984/mcollective/_design/nodelist/_view/all?reduce=true&group=false').get();
     },
+    nodelist: function() {
+      return Restangular.oneUrl('nodes',
+        'http://localhost:5984/mcollective/_design/nodelist/_view/all?reduce=true&group=true').get();
+    },    
   };
 
 }]);

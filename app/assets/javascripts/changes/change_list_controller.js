@@ -235,18 +235,31 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   }
 
   $scope.getTierRiskData = function() {
+
+    $scope.tierhosts = $scope.tierhosts || {};
+    $scope.tierriskdata = $scope.tierriskdata || {};
+
+    // First populate with all hosts and their tier
+    nodeWrapper.nodelist().then(function(res) {
+      res.rows.forEach(function(row) {
+        if (! $scope.tierhosts[row.key]) {
+          $scope.tierhosts[row.key] = {'tier': Object.keys(row.value).splice(1, 1).shift()};
+        }
+      });
+    }, function(reason) {
+      console.log(reason);
+    });
+
     Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
-      $scope.tierhosts = $scope.tierhosts || {};
-      $scope.tierriskdata = $scope.tierriskdata || {};
 
       ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.tierriskdata[cur_tier] = {};
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
-            if (row['key'] == cur_risk && row['value']) {
-              Object.keys(row['value']).forEach(function(host) {
+            if (row.key === cur_risk && row.value) {
+              Object.keys(row.value).forEach(function(host) {
                 nodeWrapper.get_tier(host).then(function(host_tier) {
-                  if (host_tier == cur_tier) {
+                  if (host_tier === cur_tier) {
                     if (! $scope.tierriskdata[cur_tier][cur_risk]) {
                       $scope.tierriskdata[cur_tier][cur_risk] = [];
                     }
@@ -260,10 +273,10 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
                     // And the count of every change
                     if ($scope.tierhosts[host][cur_risk]) {
-                      $scope.tierhosts[host][cur_risk] =+ row['value'][host];
+                      $scope.tierhosts[host][cur_risk] =+ row.value[host];
                     }
                     else {
-                      $scope.tierhosts[host][cur_risk] = row['value'][host];
+                      $scope.tierhosts[host][cur_risk] = row.value[host];
                     }
 
                   }
