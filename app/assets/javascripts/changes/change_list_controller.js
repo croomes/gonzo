@@ -241,12 +241,10 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
       ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.tierriskdata[cur_tier] = {};
-
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
             if (row['key'] == cur_risk && row['value']) {
-              Object.keys(row['value']).forEach(function(host, value) {
-
+              Object.keys(row['value']).forEach(function(host) {
                 nodeWrapper.get_tier(host).then(function(host_tier) {
                   if (host_tier == cur_tier) {
                     if (! $scope.tierriskdata[cur_tier][cur_risk]) {
@@ -262,10 +260,10 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
                     // And the count of every change
                     if ($scope.tierhosts[host][cur_risk]) {
-                      $scope.tierhosts[host][cur_risk]++;
+                      $scope.tierhosts[host][cur_risk] =+ row['value'][host];
                     }
                     else {
-                      $scope.tierhosts[host][cur_risk] = 1;
+                      $scope.tierhosts[host][cur_risk] = row['value'][host];
                     }
 
                   }
