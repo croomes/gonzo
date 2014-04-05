@@ -6,7 +6,7 @@ Gonzo's goal is to increase confidence in Puppet changes by making it easier to 
 
 ## Screencast
 
-![Screencast](https://github.com/croomes/slides/raw/master/Puppet%20Camp%20London%20April%202014/gonzo_screencast.mp4)
+![Screencast](http://vimeo.com/91069749)
 
 ## List Available Releases
 
