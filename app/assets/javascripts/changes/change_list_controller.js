@@ -4,20 +4,18 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   // Trigger mcollective noop run from the UI
   $scope.analyse = function() {
 
+    console.log("Resetting data for new analysis");
+    $scope.reset();
+
     var modalInstance = $modal.open({
       templateUrl: '/assets/releases/progress.html',
       controller: 'ReleaseProgressCtrl',
     });
 
-    modalInstance.result.then(function (selectedItem) {
-    }, function () {
-      console.log('Modal dismissed at: ' + new Date());
-    });
+    modalInstance.result.then();
 
     Restangular.oneUrl('nodes', "/releases/" + $stateParams.version + "/check.json").get().then(function(res) {
-      console.log("analyse");
-      $scope.reset();
-      console.log(res);
+      console.log("Queued analysis");
     }, function(reason) {
       console.log(reason);
     });
@@ -45,17 +43,33 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     $scope.refreshAnalysed();
     $scope.getRiskData();
     $scope.getHostRiskData();
-    $scope.getTierRiskData();
   }
 
   // Uses bulk get/save to remove nodes from "change" documents.
   // Keeps the changes in place so we don't lose metadata, just
   // the association to nodes, and removing the node reports.
   $scope.reset = function() {
+    reset_changes = [];
+    $scope.reports = [];
+    $scope.tierriskdata = {};
+
+    // Clear analysed counters
+    if ($scope.analysed && $scope.analysed[$scope.version]) {
+      $scope.analysed[$scope.version] = {};
+    }
+
+    // Clear tierhosts, leaving tier.
+    Object.keys($scope.tierhosts).forEach(function(host) {
+      delete $scope.tierhosts[host]['risk'];
+      ['unassessed', 'low', 'medium', 'high'].forEach(function(risk) {
+        if ($scope.tierhosts[host][risk]) {
+          delete $scope.tierhosts[host][risk];
+        }
+      });
+    });
+    $scope.getTierHosts();
+
     changeWrapper.alldocs().then(function(docs) {
-      reset_changes = [];
-      // $scope.analysed = {};
-      $scope.reports = {};
       docs.rows.forEach(function(entry) {
         if (entry.doc.collection == "change") {
           entry.doc.nodes = [];
@@ -107,6 +121,23 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
     });
   };
 
+  $scope.getTierHosts = function(host) {
+    console.log("getTierHosts");
+    $scope.tierhosts = $scope.tierhosts || {};
+    nodeWrapper.nodelist().then(function(res) {
+      res.rows.forEach(function(row) {
+        $scope.tierhosts[row.key] = $scope.tierhosts[row.key] || {};
+        $scope.tierhosts[row.key]['tier'] = Object.keys(row.value).splice(1, 1).shift();
+      });
+
+      // Trigger stats update
+      $scope.getTierRiskData();
+
+    }, function(reason) {
+      console.log(reason);
+    });
+  };
+
   $scope.getNodeTierData = function() {
     Restangular.oneUrl('nodes', 'http://localhost:5984/mcollective/_design/tier/_view/all?reduce=true&group=true').get().then(function(res) {
       res.rows.forEach(function(row) {
@@ -153,8 +184,8 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   $scope.removeAnalysedReport = function(version, id) {
     nodeWrapper.get_tier(id).then(function(tier) {
       if ($scope.analysed[version][tier] && $scope.analysed[version][tier][id]) {
-        delete $scope.analysed[$scope.version][tier];
-        if ($scope.analysed[$scope.version][tier].length > 0) {
+        delete $scope.analysed[$scope.version][tier][id];
+        if ($scope.analysed[$scope.version][tier] && $scope.analysed[$scope.version][tier].length > 0) {
           $scope.analysed[$scope.version][tier].length--;
         }
       }
@@ -271,54 +302,39 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
 
   $scope.getTierRiskData = function() {
 
-    $scope.tierhosts = $scope.tierhosts || {};
     $scope.tierriskdata = $scope.tierriskdata || {};
 
-    // First populate with all hosts and their tier
-    nodeWrapper.nodelist().then(function(res) {
-      res.rows.forEach(function(row) {
-        if (! $scope.tierhosts[row.key]) {
-          $scope.tierhosts[row.key] = {'tier': Object.keys(row.value).splice(1, 1).shift()};
-        }
-      });
-    }, function(reason) {
-      console.log(reason);
-    });
-
     Restangular.oneUrl('nodes', 'http://localhost:5984/r' + $scope.version + '/_design/hostrisk/_view/all?reduce=true&group=true').get().then(function(res) {
-
       ['dev', 'uat', 'prod', 'unknown'].forEach(function(cur_tier) {
         $scope.tierriskdata[cur_tier] = {};
         ['high', 'medium', 'low', 'unassessed'].forEach(function(cur_risk) {
           res.rows.forEach(function(row) {
             if (row.key === cur_risk && row.value) {
               Object.keys(row.value).forEach(function(host) {
-                nodeWrapper.get_tier(host).then(function(host_tier) {
-                  if (host_tier === cur_tier) {
-                    if (! $scope.tierriskdata[cur_tier][cur_risk]) {
-                      $scope.tierriskdata[cur_tier][cur_risk] = [];
-                    }
 
-                    // Store the highest-rated change,
-                    // keeping track in tierhosts
-                    if (! $scope.tierhosts[host]['risk']) {
-                      $scope.tierriskdata[cur_tier][cur_risk].push(host);
-                      $scope.tierhosts[host] = {'tier': cur_tier, 'risk': cur_risk};
-                    }
-
-                    // And the count of every change
-                    if ($scope.tierhosts[host][cur_risk]) {
-                      $scope.tierhosts[host][cur_risk] =+ row.value[host];
-                    }
-                    else {
-                      $scope.tierhosts[host][cur_risk] = row.value[host];
-                    }
-
+                if ($scope.tierhosts[host] && $scope.tierhosts[host]['tier'] === cur_tier) {
+                  if (! $scope.tierriskdata[cur_tier][cur_risk]) {
+                    $scope.tierriskdata[cur_tier][cur_risk] = [];
                   }
-                }, function(reason) {
-                  console.log(reason);
-                });
 
+                  // Store the highest-rated change,
+                  // keeping track in tierhosts
+                  if (! $scope.tierhosts[host]['risk']) {
+                    $scope.tierhosts[host]['risk'] = cur_risk;
+                  }
+
+                  if ($scope.tierhosts[host]['risk'] === cur_risk) {
+                    $scope.tierriskdata[cur_tier][cur_risk].push(host);
+                  }
+
+                  // And the count of every change
+                  if ($scope.tierhosts[host][cur_risk]) {
+                    $scope.tierhosts[host][cur_risk] =+ row.value[host];
+                  }
+                  else {
+                    $scope.tierhosts[host][cur_risk] = row.value[host];
+                  }
+                }
               });
             }
           });
@@ -365,11 +381,12 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   $scope.deployment = {};
   $scope.hostriskdata = {};
   $scope.getRiskData();
+  $scope.getHostRiskData();
   $scope.getDeploymentData();
-  // $scope.getHostRiskData();
-  // $scope.getTierRiskData();
   $scope.getNodeTierData();
   $scope.getNodeCount();
+  $scope.refreshAnalysed();
+  $scope.getTierHosts();
 
   // TODO: Shouldn't need to do this...
   $scope.$watch('version', function(version) {
@@ -378,12 +395,18 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   });
 
   $scope.$watch('changes'), function(changes) {
+    // console.log("changes changed");
     $scope.update_stats();
   }
 
+  $scope.$watchCollection('reports', function(reports) {
+    // console.log("reports changed");
+    $scope.getTierHosts();
+  });
+
   // Listen for changes
   $scope.$on('newResult', function(event, report) {
-    if (report.collection == "report") {
+    if (report && report.collection == "report") {
       if (! $scope.reports) {
         $scope.reports = [];
       }
@@ -397,7 +420,7 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   });
 
   $scope.$on('newChange', function(event, result) {
-    if (result.collection == "change") {
+    if (result && result.collection == "change") {
       if (! $scope.changes) {
         $scope.changes = [];
       }

@@ -20,7 +20,7 @@ var ReleaseProgressCtrl = function ($scope, $interval, $modalInstance, nodeWrapp
 
   // Listen for changes
   $scope.$on('newResult', function(event, result) {
-    if (result.collection == "report") {
+    if (result && result.collection == "report") {
       if (! $scope.reports) {
         $scope.reports = [];
       }
