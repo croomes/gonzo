@@ -1,10 +1,12 @@
 # Gonzo - Puppet change impact console
 
-**NOTE: Not ready for use/testing yet - in active development**
-
 Gonzo lets you assess the impact of your Puppet change before rolling it out across your server estate.  It takes over after continuous integration tools have run their tests and deployed the release to the Puppet Masters, but before clients have been updated.
 
 Gonzo's goal is to increase confidence in Puppet changes by making it easier to verify that all changes are intentional and understood.
+
+## Screencast
+
+![Screencast](https://github.com/croomes/slides/raw/master/Puppet%20Camp%20London%20April%202014/gonzo_screencast.mp4)
 
 ## List Available Releases
 
