@@ -2,23 +2,19 @@
 
 ## Releases
 
-* Dashboard to show release deployment status
 * Pull in / link to release notes / test evidence
 
 ## Impact Analysis
 
 ### Summary
 
-* Work out what elements to show and best format
 * Group by certain facts:
-	* Node tier (DEV/UAT/PROD)
 	* Node role
-	* Initiate deployment
+  * Other?
+* Initiate deployment
 
 ### Changes
 
-* Link to change detail
-* Link to node detail
 * Text search for filtering results
 * Toggle show assessed / low / medium / high
 * Group by nodes when more than x
