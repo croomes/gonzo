@@ -6,7 +6,7 @@ Gonzo's goal is to increase confidence in Puppet changes by making it easier to 
 
 ## Screencast
 
-![Screencast](http://vimeo.com/91069749)
+[![Screencast](https://github.com/croomes/gonzo/raw/master/screenshots/screencast.jpg)](http://vimeo.com/91069749)
 
 ## List Available Releases
 
