@@ -122,7 +122,6 @@ function($scope, $stateParams, $interval, $modal, Restangular, listener, changeW
   };
 
   $scope.getTierHosts = function(host) {
-    console.log("getTierHosts");
     $scope.tierhosts = $scope.tierhosts || {};
     nodeWrapper.nodelist().then(function(res) {
       res.rows.forEach(function(row) {
