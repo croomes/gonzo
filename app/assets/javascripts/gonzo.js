@@ -8,6 +8,7 @@ var gonzo = angular.module('gonzo', [
   'timeagoFilter',
   'capitalizeFilter',
   'releaseFilter',
+  'nodeFilter',
   'md5shortFilter',
   'revisionFilter'
 ]);

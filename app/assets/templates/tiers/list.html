@@ -20,7 +20,7 @@
       <div class="table-container-scroll">
         <table class="list-table event-count-list" id="nodes-table">
           <tbody>
-            <tr ng-repeat="node in filtered = (nodes | orderBy:predicate:reverse)" 
+            <tr ng-repeat="node in filtered = (nodes | node:tier | orderBy:predicate:reverse)" 
                 ng-class='row_class(node._id)' 
                 ui-sref='nodes.detail({certname: node._id})'>
               <td class="primary">
