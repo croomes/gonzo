@@ -1,8 +1,8 @@
-gonzo.controller('NodeCtrl', ['$scope', '$routeParams', '$location', 'nodeListener', 'nodeWrapper',
-function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
+gonzo.controller('NodeCtrl', ['$scope', '$stateParams', '$location', 'nodeListener', 'nodeWrapper',
+function($scope, $stateParams, $location, nodeListener, nodeWrapper) {
 
   $scope.get = function() {
-    nodeWrapper.get($routeParams.nodeId).then(function(res) {
+    nodeWrapper.get($stateParams.nodeId).then(function(res) {
       $scope.node = res;
     }, function(reason) {
       console.log(reason);
@@ -41,11 +41,13 @@ function($scope, $routeParams, $location, nodeListener, nodeWrapper) {
   };
 
   // Load initial data
-  if ($routeParams.nodeId) {
+  $scope.tier = $stateParams.tier;
+
+  if ($stateParams.nodeId) {
     $scope.nodes = [];
-    $scope.nodeId = $routeParams.nodeId;
+    $scope.nodeId = $stateParams.nodeId;
     if (! $scope.node) {
-      $scope.get($routeParams.nodeId);
+      $scope.get($stateParams.nodeId);
     }
   }
   else {
