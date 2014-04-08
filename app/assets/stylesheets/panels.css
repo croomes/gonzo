@@ -900,7 +900,7 @@ h2+.release-summary-transitionable {
     height: 0;
     border-left: 7px solid transparent;  /* left arrow slant */
     border-right: 7px solid transparent; /* right arrow slant */
-    border-bottom: 14px solid #7c6aab;
+    border-bottom: 14px solid #404040;
     font-size: 0;
     line-height: 0;
 }
