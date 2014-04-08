@@ -1,7 +1,7 @@
 <div class="pane1 stack-pane stack-full-pane">
   <div>
     <h2>
-      <span class="heading-label">Nodes:</span> <span class="event-count">{{ nodes.length }}</span> reporting
+      <span class="heading-label">Nodes:</span> <span class="event-count">{{ nodes.length }}</span> reporting <span ng-if="tier">in {{tier | uppercase }}</span>
     </h2>
     <p class="compact-hide"><em>Deployment summary for each node:</em></p>
     <div class="list-table-wrapper">
@@ -9,10 +9,13 @@
         <thead>
           <tr>
             <th scope="col" ng-click="predicate = '_id'; reverse=!reverse" class="primary sort-header sort-down" data-sort="certname"><span>Node</span></th>
-            <th scope="col" ng-click="predicate = 'facts.gonzo_tier'; reverse=!reverse" class="string sort-header" data-sort="failures"><span>Tier</span></th>
             <th scope="col" ng-click="predicate = 'facts.gonzo_release'; reverse=!reverse" class="string sort-header" data-sort="skips"><span>Release</span></th>
             <th scope="col" ng-click="predicate = 'facts.operatingsystem'; reverse=!reverse" class="string sort-header" data-sort="successes"><span>OS</span></th>
-            <th scope="col" ng-click="predicate = 'lastseen'; reverse=!reverse"  class="timestamp sort-header" data-sort="noops"><span>Last Seen</span></th>
+            <th scope="col" class="divider"></th>
+            <th scope="col" class="risk" title="Nodes with unassessed changes"><span>?</span></th>
+            <th scope="col" class="risk" title="Nodes with only low risk changes"><span>Low</span></th>
+            <th scope="col" class="risk" title="Nodes with medium risk changes"><span>Med</span></th>
+            <th scope="col" class="risk" title="Nodes with high risk changes"><span>High</span></th>
             <th scope="col" class="indicator"></th>
           </tr>
         </thead>
@@ -20,19 +23,34 @@
       <div class="table-container-scroll">
         <table class="list-table event-count-list" id="nodes-table">
           <tbody>
-            <tr ng-repeat="node in filtered = (nodes | node:tier | orderBy:predicate:reverse)" 
+              <tr ng-repeat="node in filtered = (nodes | node:tier | orderBy:predicate:reverse)" 
                 ng-class='row_class(node._id)' 
                 ui-sref='nodes.detail({certname: node._id})'>
               <td class="primary">
                 <div class="tier-indicator tier-indicator-{{ node.facts.gonzo_tier }}"></div>
                 <div title="{{node._id}}" class="text-truncated" ui-sref='nodes.detail({certname: node._id})'>{{ node._id }}</div>
               </td>
-              <td class="string"><span>{{ node.facts.gonzo_tier | uppercase }}</span></td>
               <td class="string"><span>{{ node.facts.gonzo_release | release }}</span></td>
               <td class="string"><span>{{ node.facts.operatingsystem }}</span></td>
-              <td class="timestamp"><span>{{ node.lastseen * 1000 | date:'HH:mm:ss' }}</span></td>
+              <td class="divider"></td>
+              <td class="risk">
+                <div title="Unassessed changes" class="change-indicator change-indicator-unassessed"></div>
+                <span>{{ tierhosts[node._id].unassessed || '-'}}</span>
+              </td>
+              <td class="risk">
+                <div title="Low risk changes" class="change-indicator change-indicator-low"></div>
+                <span>{{ tierhosts[node._id].low || '-' }}</span>
+              </td>
+              <td class="risk">
+                <div title="Medium risk changes" class="change-indicator change-indicator-medium"></div>
+                <span>{{ tierhosts[node._id].medium || '-' }}</span>
+              </td>
+              <td class="risk">
+                <div title="High risk changes" class="change-indicator change-indicator-high"></div>
+                <span>{{ tierhosts[node._id].high || '-' }}</span>
+              </td>
               <td class="transition">
-                <a ui-sref='nodes.detail({certname: node._id})'><i class="fa fa-chevron-right"></i></a>
+                <a ui-sref='releases.detail.tier({version: version, tier: tier})'><i class="fa fa-chevron-right"></i></a>
               </td>
             </tr>
           </tbody>
