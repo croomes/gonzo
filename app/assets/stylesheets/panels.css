@@ -163,7 +163,7 @@ html:not([data-useragent*='MSIE 10.0']) .list-table-wrapper tr:not(.list-contain
     text-align: right;
 }
 .stack-compact-pane .list-table td {
-    font-size: 11px;
+    /*font-size: 11px;*/
 }
 .stack-compact-pane .list-table td.transition {
     display: none;
