@@ -4,6 +4,10 @@ Gonzo lets you assess the impact of your Puppet change before rolling it out acr
 
 Gonzo's goal is to increase confidence in Puppet changes by making it easier to verify that all changes are intentional and understood.
 
+## Note
+
+14/04/2014 - I've pulled the CSS file from the repo as it isn't open source.  No plans/ETA for a replacement just yet.  Sorry.
+
 ## Screencast
 
 [![Screencast](https://github.com/croomes/gonzo/raw/master/screenshots/screencast.jpg)](http://vimeo.com/91069749)
